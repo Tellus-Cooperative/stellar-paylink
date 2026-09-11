@@ -40,12 +40,12 @@ Fuente de verdad para marcar avance. Solo se marca `[x]` lo verificado con coman
 ### P2 — endurecimiento
 
 - [x] Rate limits en `POST /api/links` (20/min) y verify (60/min) con `429 RATE_LIMITED` + `Retry-After` (verificado en vivo: 20 pasan, resto 429). In-memory por proceso; documentar Redis si hay multi-instancia.
-- [x] Headers seguros vía `src/middleware.ts`: CSP (scripts externos bloqueados; `unsafe-inline` documentado como limitación hasta nonces), `nosniff`, `DENY`, `Referrer-Policy`, `Permissions-Policy`, HSTS. Verificado en vivo en `/`, `/create`, `/pay`, `/receipt`.
+- [x] Headers seguros vía `src/proxy.ts` (antes `middleware.ts`; Next 16.3 lo marca deprecado): CSP (scripts externos bloqueados; `unsafe-inline` documentado como limitación hasta nonces), `nosniff`, `DENY`, `Referrer-Policy`, `Permissions-Policy`, HSTS. Verificado en vivo en `/`, `/create`, `/pay`, `/receipt`.
 - [x] Suite e2e Playwright (`playwright.config.ts`, `tests/e2e/flow.spec.ts` 6 tests + `screenshots.spec.ts` desktop/mobile, todo en verde 2026-09-11).
 - [ ] Re-verde e2e tras últimos cambios: test de teclado + screenshots (escritos, pendiente run con RAM libre; el servidor muere con ~80MB libres).
 - [x] Migrar `src/middleware.ts` → `src/proxy.ts` (Next 16.3 marca middleware como deprecado; headers verificados).
-- [ ] Tests de integración API: creación solo con valores normalizados, link expirado no paga, hash reutilizado se rechaza.
-- [ ] Corregir `Number(amount)` en `src/app/create/create-form.tsx:96` (usar validación sin float; el servidor ya re-valida con stroops).
+- [x] Tests de integración API (`tests/integration/api/links.test.ts`, 8 tests): creación solo con valores normalizados, link expirado no paga (410), hash reutilizado se rechaza (409), idempotencia.
+- [x] Corregido `Number(amount)` en `src/app/create/create-form.tsx` (usa `parseAmount().ok`, sin float).
 - [x] Pass accesibilidad estático en `/create` y `/pay/[slug]`: inputs con label, botones con nombre, imágenes decorativas con `alt=""`/aria-hidden, errores con `role="alert"`, estados con texto, controles nativos por teclado. Falta verificación con lector de pantalla.
 - [ ] Screenshots, demo corta, deploy `v0.1.0-rc.1`, prueba clean-room de fork, tag `v0.1.0`.
 

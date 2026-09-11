@@ -24,7 +24,7 @@ export default function BrandMark() {
       )}
       <img
         ref={ref}
-        src="/assets/tellus-icon.png"
+        src="/tellus-icon.png"
         alt=""
         onLoad={() => setLoaded(true)}
       />

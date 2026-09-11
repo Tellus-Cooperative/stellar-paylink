@@ -273,7 +273,7 @@ export default function PayClient({
         <aside className="paylink__panel paylink__panel--preview">
           <div className="paylink__preview-art">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/paylink-pending.webp" alt="" aria-hidden />
+            <img src="/paylink-pending.webp" alt="" aria-hidden />
             <span className="paylink__preview-status">
               <span className="paylink__status-dot" aria-hidden />
               {expired ? "Expired" : "Pending"}

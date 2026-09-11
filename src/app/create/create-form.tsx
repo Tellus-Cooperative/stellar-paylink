@@ -254,7 +254,7 @@ export default function CreateForm({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className="paylink__preview-arrow"
-              src="/assets/create-share-arrow.png"
+              src="/create-share-arrow.png"
               alt="Glass arrow pointing upward, representing a shared payment link"
             />
           </div>
@@ -490,7 +490,7 @@ export default function CreateForm({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className="paylink__preview-arrow"
-              src="/assets/create-share-arrow.png"
+              src="/create-share-arrow.png"
               alt="Glass arrow pointing upward, representing a shared payment link"
             />
           </div>

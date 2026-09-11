@@ -72,7 +72,7 @@ export default function ReceiptView({
       <aside className="paylink__panel paylink__panel--preview">
         <div className="paylink__preview-art">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/paylink-verified.webp" alt="" aria-hidden />
+          <img src="/paylink-verified.webp" alt="" aria-hidden />
           <span className="paylink__preview-status is-verified">
             <span className="paylink__status-dot" aria-hidden />
             Verified

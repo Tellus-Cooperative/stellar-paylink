@@ -10,18 +10,10 @@ const nextConfig = {
   serverExternalPackages: ["pg"],
   experimental: { optimizePackageImports: ["@stellar/stellar-sdk", "react-qr-code"] },
   transpilePackages: ["@stellar/stellar-sdk"],
-  outputFileTracingExcludes: {
-    "*": [
-      "./assets/**",
-      "./assets/*.png",
-      "./*.png",
-      "./poster-*.png",
-      "./hover*.png",
-      "./orbit-*.png",
-      "./verify-*.png",
-      "./index.html",
-      "./**/*.png",
-    ],
+  // La ruta / lee public/index.html en runtime; en producción ese archivo
+  // debe viajar en el bundle de la función (public/ va al CDN, no al FS).
+  outputFileTracingIncludes: {
+    "/": ["./public/index.html"],
   },
 };
 module.exports = nextConfig;

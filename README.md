@@ -107,7 +107,6 @@ Wallet and database adapters are isolated behind interfaces (`src/lib/db/types.t
 | `POST /api/links` | Implemented | Validate, check destination readiness, create a link |
 | `GET /api/links/[slug]` | Implemented | Return safe public link data |
 | `POST /api/links/[slug]/verify` | Implemented | Verify a submitted transaction hash on-chain |
-| `GET /assets/[name]` | Implemented | Serve static assets under `assets/` |
 
 All API responses use a stable envelope: `{ ok: true, data }` or `{ ok: false, error: { code, message } }`. Error codes are shared in `src/lib/api/response.ts`. Every browser-supplied value is re-validated on the server with Zod (<code>src/lib/validation/link-schema.ts</code>).
 
