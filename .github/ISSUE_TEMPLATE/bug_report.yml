@@ -1,0 +1,35 @@
+name: Bug report
+description: Something behaves differently than documented
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got instead.
+      placeholder: |
+        1. Created a link for 10 XLM on Testnet
+        2. Paid it from Freighter
+        3. Expected status paid, got verification mismatch
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Exact steps, including link slug if shareable and transaction hash if any.
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: Browser/wallet, commit or tag, DATABASE_URL set or in-memory.
+      placeholder: "Chrome + Freighter, main@abc1234, in-memory store"
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Logs or error codes (e.g. PAYMENT_MISMATCH). Never paste private keys, seed phrases, or secrets.

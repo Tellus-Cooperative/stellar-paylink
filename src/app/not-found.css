@@ -1,0 +1,129 @@
+@font-face {
+  font-family: "Geist Mono:SemiBold";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("https://static.figma.com/font/GeistMono_wght__1")
+    format("woff2");
+}
+
+.not-found {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  font-family: "Geist Mono:SemiBold", ui-monospace, SFMono-Regular, Menlo,
+    Consolas, monospace;
+}
+
+.not-found__video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+}
+
+.not-found__brand {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  width: 233px;
+  transform: translateX(-50%);
+}
+
+.not-found__brand svg {
+  flex: 0 0 54px;
+  width: 54px;
+  height: 40px;
+}
+
+.not-found__brand-name {
+  margin-left: 14px;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.not-found__content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  width: min(483px, calc(100% - 40px));
+  flex-direction: column;
+  align-items: center;
+  gap: 44px;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.not-found__num {
+  margin: 0;
+  padding-bottom: 0.1em;
+  background-image: linear-gradient(
+    247.3282658084845deg,
+    rgb(255, 255, 255) 2.5334%,
+    rgba(255, 255, 255, 0.4) 93.612%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: min(295.751px, 21vw);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.0833em;
+}
+
+.not-found__divider {
+  width: 425px;
+  max-width: 100%;
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: #fff;
+}
+
+.not-found__msg {
+  max-width: 100%;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -2px;
+}
+
+@media (max-width: 640px) {
+  .not-found__brand {
+    top: 32px;
+    transform: translateX(-50%) scale(0.75);
+  }
+
+  .not-found__content {
+    width: min(100% - 40px, 360px);
+    gap: 28px;
+  }
+
+  .not-found__num {
+    font-size: clamp(140px, 52vw, 200px);
+    letter-spacing: -0.09em;
+  }
+
+  .not-found__divider {
+    width: 100%;
+  }
+
+  .not-found__msg {
+    font-size: clamp(16px, 4.5vw, 20px);
+    letter-spacing: -1.3px;
+  }
+}

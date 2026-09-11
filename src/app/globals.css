@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Orbit poster tokens — single source of truth, mirrored from index.html */
+    --ink: #ffffff;
+    --surface: #161616;
+    --sand: #ece0cc;
+    --teal: #3f8487;
+    --orb-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+    --orb-soft: cubic-bezier(0.25, 0.8, 0.28, 1);
+
+    --sans: var(--font-orbit-sans), Arial, Helvetica, sans-serif;
+    --display: var(--font-orbit-display), var(--font-orbit-sans), Arial, sans-serif;
+
+    --background: 0 0% 8.6%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 182 36% 39%;
+    --primary-foreground: 40 50% 95%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 38 24% 74%;
+    --accent: 182 36% 39%;
+    --accent-foreground: 40 50% 95%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 100% / 0.14;
+    --input: 0 0% 100% / 0.14;
+    --ring: 38 45% 86%;
+    --radius: 0.5rem;
+  }
+
+  html,
+  body {
+    width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--surface);
+  }
+
+  body {
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+  }
+
+  ::selection {
+    background: rgba(63, 132, 135, 0.4);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--sand);
+    outline-offset: 5px;
+  }
+}
