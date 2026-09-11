@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
+// Evita que Next intente prerenderizar esta ruta durante el build:
+// leer index.html (1.5 MB) en workers de compilación bloquea la build.
 export const dynamic = "force-dynamic";
 
 export async function GET() {
