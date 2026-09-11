@@ -48,6 +48,7 @@ Fuente de verdad para marcar avance. Solo se marca `[x]` lo verificado con coman
 - [x] Corregido `Number(amount)` en `src/app/create/create-form.tsx` (usa `parseAmount().ok`, sin float).
 - [x] Pass accesibilidad estático en `/create` y `/pay/[slug]`: inputs con label, botones con nombre, imágenes decorativas con `alt=""`/aria-hidden, errores con `role="alert"`, estados con texto, controles nativos por teclado. Falta verificación con lector de pantalla.
 - [ ] Screenshots, demo corta, deploy `v0.1.0-rc.1`, prueba clean-room de fork, tag `v0.1.0`.
+- [x] Deploy en Vercel (2026-09-11): `https://stellar-paylink-lac.vercel.app` en verde (landing 200, imágenes 200, API 201). Hallazgos: preset Next.js vía `vercel.json`, landing desde `public/` + `outputFileTracingIncludes`, imágenes en `public/`. Pendiente: `DATABASE_URL` (Neon) + `NEXT_PUBLIC_APP_URL` + redeploy final.
 
 ## Release sequence
 
