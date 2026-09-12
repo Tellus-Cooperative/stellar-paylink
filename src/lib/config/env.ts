@@ -19,16 +19,19 @@ const envSchema = z.object({
 
 export type EnvConfig = z.infer<typeof envSchema>;
 
+const emptyToUndefined = (value: string | undefined) =>
+  value?.trim() === "" ? undefined : value;
+
 export const STELLAR_TESTNET_PASSPHRASE =
   "Test SDF Network ; September 2015";
 
 export function loadEnv(): EnvConfig {
   const parsed = envSchema.safeParse({
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-    STELLAR_NETWORK: process.env.STELLAR_NETWORK,
-    STELLAR_HORIZON_URL: process.env.STELLAR_HORIZON_URL,
-    USDC_ASSET_CODE: process.env.USDC_ASSET_CODE,
-    USDC_ASSET_ISSUER: process.env.USDC_ASSET_ISSUER,
+    NEXT_PUBLIC_APP_URL: emptyToUndefined(process.env.NEXT_PUBLIC_APP_URL),
+    STELLAR_NETWORK: emptyToUndefined(process.env.STELLAR_NETWORK),
+    STELLAR_HORIZON_URL: emptyToUndefined(process.env.STELLAR_HORIZON_URL),
+    USDC_ASSET_CODE: emptyToUndefined(process.env.USDC_ASSET_CODE),
+    USDC_ASSET_ISSUER: emptyToUndefined(process.env.USDC_ASSET_ISSUER),
   });
   if (!parsed.success) {
     throw new Error(
