@@ -44,6 +44,7 @@ Fuente de verdad para marcar avance. Solo se marca `[x]` lo verificado con coman
 - [x] Headers seguros vía `src/proxy.ts` (antes `middleware.ts`; Next 16.3 lo marca deprecado): CSP (scripts externos bloqueados; `unsafe-inline` documentado como limitación hasta nonces), `nosniff`, `DENY`, `Referrer-Policy`, `Permissions-Policy`, HSTS. Verificado en vivo en `/`, `/create`, `/pay`, `/receipt`.
 - [x] Suite e2e Playwright (`playwright.config.ts`, `tests/e2e/flow.spec.ts` 6 tests + `screenshots.spec.ts` desktop/mobile, todo en verde 2026-09-11).
 - [x] Re-verde e2e tras últimos cambios (2026-09-12): test de teclado + screenshots desktop/mobile, 9/9 en verde (~9s).
+- [x] CI GitHub Actions (2026-09-12): pipeline `quality` (typecheck + lint + test + build) y `secrets-scan` (gitleaks binario, 0 leaks) en `main` y en PRs. Gitleaks corrido localmente y limpio (5.25 MB, 0 findings).
 - [x] Migrar `src/middleware.ts` → `src/proxy.ts` (Next 16.3 marca middleware como deprecado; headers verificados).
 - [x] Tests de integración API (`tests/integration/api/links.test.ts`, 8 tests): creación solo con valores normalizados, link expirado no paga (410), hash reutilizado se rechaza (409), idempotencia.
 - [x] Corregido `Number(amount)` en `src/app/create/create-form.tsx` (usa `parseAmount().ok`, sin float).
