@@ -61,6 +61,7 @@ jobs:
           fetch-depth: 0
 
       - name: Detect secrets with gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o /usr/local/bin/gitleaks
+          chmod +x /usr/local/bin/gitleaks
+          /usr/local/bin/gitleaks detect --source . --no-banner --redact
