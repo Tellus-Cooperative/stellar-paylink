@@ -415,44 +415,8 @@ export default function CreateForm({
             </div>
           </div>
 
-          <div className="harelink__step">
+<div className="harelink__step">
             <span className="harelink__step-num">03</span>
-            <div className="harelink__step-body">
-              <span className="harelink__step-label">Asset</span>
-              <div
-                className="harelink__asset-row"
-                role="group"
-                aria-label="Asset to charge"
-              >
-                {assets.map((asset) => {
-                  const key = assetKey(asset);
-                  const active = key === selectedAssetKey;
-                  return (
-                    <button
-                      key={key}
-                      className={`harelink__asset-chip${
-                        active ? " is-active" : ""
-                      }`}
-                      type="button"
-                      aria-pressed={active}
-                      onClick={() => setSelectedAssetKey(key)}
-                    >
-                      {assetLabel(asset)}
-                    </button>
-                  );
-                })}
-              </div>
-              {assets.length === 1 && (
-                <span className="harelink__field-hint">
-                  Only XLM is enabled. Set USDC_ASSET_ISSUER to offer credit
-                  assets.
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="harelink__step">
-            <span className="harelink__step-num">04</span>
             <div className="harelink__step-body">
               <label
                 className="harelink__step-label"
@@ -486,7 +450,7 @@ export default function CreateForm({
           </div>
 
           <div className="harelink__step">
-            <span className="harelink__step-num">05</span>
+            <span className="harelink__step-num">04</span>
             <div className="harelink__step-body">
               <label className="harelink__step-label" htmlFor="harelink-memo">
                 Memo / Optional
