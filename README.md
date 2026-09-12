@@ -2,7 +2,7 @@
 
 **Create a payment link. Get paid on Stellar.**
 
-[![Status](https://img.shields.io/badge/status-pre--release-F0AF2F)](#project-status)
+[![Status](https://img.shields.io/badge/status-v0.1.0--rc.1-3F8487)](#project-status)
 [![Network](https://img.shields.io/badge/network-Stellar%20Testnet-3F8487)](#network-and-assets)
 [![License](https://img.shields.io/badge/license-MIT-005B52)](#license)
 [![Built by Tellus](https://img.shields.io/badge/built%20by-Tellus%20Cooperative-ECE0CC)](https://telluscoop.org/)
@@ -11,7 +11,7 @@ Stellar HareLink is an open-source, non-custodial web application for creating a
 
 The application never requests, receives, or stores a private key or seed phrase.
 
-> **Project status:** implementation in progress. The `v0.1.0` Testnet target remains **September 16, 2026**. API, wallet flow, QR share, and receipt pages are implemented and tested; hardening and release docs are next. This repository is experimental and has not been audited.
+> **Project status:** release candidate. **`v0.1.0-rc.1`** is deployed and tested (unit, integration, and browser suites green; live test payments in XLM and USDC verified against Testnet). The `v0.1.0` target remains **September 16, 2026**, pending a clean-room setup by someone outside the project. This repository is experimental and has not been audited.
 
 ## Why this project exists
 
@@ -49,7 +49,7 @@ flowchart LR
 - Create a single-use payment link.
 - Request a fixed amount in XLM or an allowlisted USDC asset.
 - Add a short title, description, expiration date, and generated reference memo.
-- Share the payment page by URL or QR code.
+- Share the payment page by URL, QR code, or a downloadable share card with shortcuts for X and WhatsApp.
 - Connect a supported Stellar wallet and sign without exposing secret keys.
 - Check destination readiness for credit assets before payment.
 - Submit a classic Stellar `Payment` operation on Testnet.
@@ -153,8 +153,8 @@ The application must not silently substitute an issuer. A fork must explicitly c
 ## Local development
 
 ```bash
-git clone https://github.com/Tellus-Cooperative/stellar-harelink.git
-cd stellar-harelink
+git clone https://github.com/Tellus-Cooperative/stellar-paylink.git
+cd stellar-paylink
 pnpm install
 cp .env.example .env.local
 pnpm dev
@@ -185,6 +185,20 @@ USDC_ASSET_ISSUER=
 
 `USDC_ASSET_ISSUER` must be a valid `G...` address; leave it empty to run XLM-only. Configuration is validated at startup by Zod in `src/lib/config/env.ts`. No secret key, seed phrase, or custodial signing credential belongs in the environment file.
 
+### Deployment and asset configuration
+
+There is no custodial signing or private key anywhere in the deployment: the app only reads network data with Horizon on Testnet. To deploy your own instance:
+
+1. Fork the repository and set these environment variables in your platform:
+   - `NEXT_PUBLIC_APP_URL` must be your public base URL (e.g. `https://your-domain.example`). It is embedded at build time, so deploy as a fresh build after changing it.
+   - `STELLAR_NETWORK=testnet` and `STELLAR_HORIZON_URL=https://horizon-testnet.stellar.org` are the safe defaults.
+   - `DATABASE_URL`: leave it empty for the in-memory store, or set a PostgreSQL DSN (e.g. Neon) and run `pnpm db:migrate` so links persist across restarts.
+   - `USDC_ASSET_CODE` / `USDC_ASSET_ISSUER`: to accept USDC, set the code and the explicit issuer account for your asset. Leave `USDC_ASSET_ISSUER` empty for an XLM-only deployment. The app never invents an issuer and refuses to pay credit assets whose code-issuer pair is not configured.
+2. Build with `pnpm build` and start with `pnpm start`. The app is a standard Next.js server, so any provider that runs a Next.js server works; `vercel.json` documents the preset used for the reference deploy.
+3. Verify readiness before announcing: create a link, open `/create`, and confirm the success panel shows an amount, the memo, and readiness for the destination account/trustline.
+
+The reference Testnet demo runs at <https://stellar-paylink-lac.vercel.app>.
+
 ## Quality commands
 
 ```bash
@@ -193,7 +207,7 @@ pnpm lint         # check lint rules
 pnpm typecheck    # run TypeScript checks
 pnpm test         # run unit tests (Vitest)
 pnpm test:watch   # watch mode
-pnpm test:e2e     # browser tests (Playwright, pending)
+pnpm test:e2e     # browser tests (Playwright; requires pnpm build)
 pnpm build        # create a production build
 ```
 
