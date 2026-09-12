@@ -39,13 +39,14 @@ export const metadata: Metadata = {
     title: "HareLink — Open-source Stellar Payment Links",
     description:
       "Create and share non-custodial payment links on Stellar. HareLink is open source, wallet-signed, and built by Tellus Cooperative.",
-    images: [{ url: "/harelink-verified.webp", width: 1200, height: 630, alt: "HareLink — Open-source Stellar Payment Links" }],
+    images: [{ url: "/harelink-og.png", width: 1200, height: 630, alt: "HareLink — Open-source Stellar Payment Links" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "HareLink — Open-source Stellar Payment Links",
     description:
       "Create and share non-custodial payment links on Stellar. HareLink is open source, wallet-signed, and built by Tellus Cooperative.",
+    images: [{ url: "/harelink-og.png", alt: "HareLink — Open-source Stellar Payment Links" }],
   },
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
