@@ -34,3 +34,13 @@ Use concise Conventional Commit prefixes: `feat:`, `fix:`, `docs:`, and `test:`.
 ## Security and Configuration
 
 The public MVP is Testnet-only. Never commit private keys, seed phrases, credentials, personal data, or populated `.env` files. Use a secret-free `.env.example`; allowlist supported assets and require an explicit issuer for credit assets. Report vulnerabilities through the private process described by the future `SECURITY.md`, not public issues.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
