@@ -108,7 +108,7 @@ test("success panel exposes share card and QR download", async ({ page }) => {
   await page.getByRole("button", { name: /Create payment link/i }).click();
   await expect(page.getByText("Link ready")).toBeVisible();
 
-  // Botones nuevos del share card estilo Binance
+  // Botón que abre el menú de share, y botón de descarga de QR
   const shareCard = page.getByRole("button", { name: /Share card/i });
   const downloadQr = page.getByRole("button", { name: /Download QR/i });
   await expect(shareCard).toBeVisible();
@@ -120,15 +120,30 @@ test("success panel exposes share card and QR download", async ({ page }) => {
   const qr = page.locator("[data-export-qr] svg");
   await expect(qr).toHaveCount(1);
 
+  // Abrir el menú y comprobar las opciones de compartir
+  await shareCard.click();
+  const menu = page.getByRole("menu", { name: /Share options/i });
+  await expect(menu).toBeVisible();
+  await expect(
+    page.getByRole("menuitem", { name: /Share with the system/i })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("menuitem", { name: /Save image/i })
+  ).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: /Post on X/i })).toBeVisible();
+  await expect(
+    page.getByRole("menuitem", { name: /WhatsApp/i })
+  ).toBeVisible();
+
+  // "Save image" descarga la tarjeta PNG
+  const cardDownload = page.waitForEvent("download", { timeout: 20000 });
+  await page.getByRole("menuitem", { name: /Save image/i }).click();
+  const cardFile = await cardDownload;
+  expect(cardFile.suggestedFilename()).toMatch(/^harelink-pay-.*\.png$/);
+
   // Download QR dispara una descarga PNG
   const qrDownload = page.waitForEvent("download", { timeout: 20000 });
   await downloadQr.click();
   const qrFile = await qrDownload;
   expect(qrFile.suggestedFilename()).toMatch(/^harelink-qr-.*\.png$/);
-
-  // Share card en desktop descarga la tarjeta PNG
-  const cardDownload = page.waitForEvent("download", { timeout: 20000 });
-  await shareCard.click();
-  const cardFile = await cardDownload;
-  expect(cardFile.suggestedFilename()).toMatch(/^harelink-pay-.*\.png$/);
 });

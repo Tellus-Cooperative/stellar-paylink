@@ -108,6 +108,8 @@ export default function CreateForm({
   const [created, setCreated] = useState<CreatedLink | null>(null);
   const [copied, setCopied] = useState(false);
   const [exporting, setExporting] = useState<"qr" | "card" | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [cardImage, setCardImage] = useState<{ dataUrl: string } | null>(null);
 
   const shareCardRef = useRef<HTMLDivElement>(null);
 
@@ -222,6 +224,8 @@ export default function CreateForm({
     setDescription("");
     setExpiry("never");
     setCopied(false);
+    setMenuOpen(false);
+    setCardImage(null);
   }
 
   async function downloadQr() {
@@ -248,58 +252,104 @@ export default function CreateForm({
     }
   }
 
-  async function shareCard() {
-    if (!created || !shareCardRef.current) return;
-    setExporting("card");
+  async function renderShareCard(): Promise<string | null> {
+    if (!created || !shareCardRef.current) return null;
     try {
-      const dataUrl = await toPng(shareCardRef.current, {
+      return await toPng(shareCardRef.current, {
         pixelRatio: 2,
         cacheBust: true,
         backgroundColor: "#161616",
       });
-
-      // Convertir dataUrl a blob sin fetch (CSP bloquea fetch con data: URIs).
-      const [header, data] = dataUrl.split(",");
-      const mime = header.match(/:(.*?);/)?.[1] || "image/png";
-      const binary = atob(data);
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-      const blob = new Blob([bytes], { type: mime });
-      const file = new File(
-        [blob],
-        `harelink-pay-${created.slug}.png`,
-        { type: "image/png" }
-      );
-
-      const nav = navigator as Navigator & {
-        canShare?: (data: ShareData) => boolean;
-      };
-      const isTouchDevice = navigator.maxTouchPoints > 0;
-      if (
-        isTouchDevice &&
-        nav.share &&
-        nav.canShare &&
-        nav.canShare({ files: [file] })
-      ) {
-        // En móvil: permite elegir X, WhatsApp u otra app con la imagen lista.
-        await nav.share({
-          files: [file],
-          title: `HareLink: ${created.title}`,
-          text: shareMessage(),
-        });
-        return;
-      }
-
-      // Fallback desktop: descargar la tarjeta para adjuntarla manualmente.
-      const link = document.createElement("a");
-      link.download = `harelink-pay-${created.slug}.png`;
-      link.href = dataUrl;
-      link.click();
     } catch {
-      // Usuario canceló el share nativo; no es un error.
-    } finally {
-      setExporting(null);
+      setError("Could not generate the share card. Try again.");
+      return null;
     }
+  }
+
+  // Convierte un dataUrl a blob y File sin fetch (CSP bloquea fetch con data: URIs).
+  function dataUrlToFile(dataUrl: string, filename: string): File {
+    const [header, data] = dataUrl.split(",");
+    const mime = header.match(/:(.*?);/)?.[1] || "image/png";
+    const binary = atob(data);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new File([bytes], filename, { type: mime });
+  }
+
+  function downloadDataUrl(dataUrl: string, filename: string) {
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = dataUrl;
+    link.click();
+  }
+
+  async function shareMenu() {
+    if (!created || exporting !== null) return;
+    setExporting("card");
+    const dataUrl = await renderShareCard();
+    if (dataUrl) {
+      setCardImage({ dataUrl });
+      setMenuOpen(true);
+    }
+    setExporting(null);
+  }
+
+  async function shareViaSystem() {
+    if (!created) return;
+    const image = cardImage ?? { dataUrl: (await renderShareCard()) ?? "" };
+    const file = dataUrlToFile(
+      image.dataUrl,
+      `harelink-pay-${created.slug}.png`
+    );
+
+    const nav = navigator as Navigator & {
+      canShare?: (data: ShareData) => boolean;
+    };
+    if (nav.share && nav.canShare && nav.canShare({ files: [file] })) {
+      await nav.share({
+        files: [file],
+        title: `HareLink: ${created.title}`,
+        text: shareMessage(),
+      });
+      setMenuOpen(false);
+      return;
+    }
+
+    // Sin share nativo: descargar la imagen para adjuntarla manualmente.
+    downloadDataUrl(image.dataUrl, `harelink-pay-${created.slug}.png`);
+    setMenuOpen(false);
+  }
+
+  function saveCardImage() {
+    if (!created || !cardImage) return;
+    downloadDataUrl(cardImage.dataUrl, `harelink-pay-${created.slug}.png`);
+    setMenuOpen(false);
+  }
+
+  function shareOnX() {
+    if (!created) return;
+    const message = shareMessage();
+    const url =
+      "https://x.com/intent/post?text=" +
+      encodeURIComponent(message + "\nvia HareLink") +
+      "&url=" +
+      encodeURIComponent(created.paymentUrl);
+    window.open(url, "_blank", "noopener,noreferrer");
+    setMenuOpen(false);
+  }
+
+  function shareOnWhatsApp() {
+    if (!created) return;
+    const message = shareMessage();
+    const url =
+      "https://wa.me/?text=" +
+      encodeURIComponent(message + "\n" + created.paymentUrl);
+    window.open(url, "_blank", "noopener,noreferrer");
+    setMenuOpen(false);
+  }
+
+  function closeShareMenu() {
+    setMenuOpen(false);
   }
 
   if (created) {
@@ -327,14 +377,69 @@ export default function CreateForm({
             >
               {copied ? "Copied" : "Copy link"} <span aria-hidden>↗</span>
             </button>
-            <button
-              className="harelink__ghost-button"
-              type="button"
-              onClick={shareCard}
-              disabled={exporting !== null}
-            >
-              {exporting === "card" ? "Preparing…" : "Share card"}
-            </button>
+            <div className="harelink__share">
+              <button
+                className="harelink__ghost-button"
+                type="button"
+                onClick={shareMenu}
+                disabled={exporting !== null}
+                aria-haspopup="menu"
+                aria-expanded={menuOpen}
+              >
+                {exporting === "card" ? "Preparing…" : "Share card"}
+              </button>
+
+              {menuOpen && (
+                <div
+                  className="harelink__share-menu"
+                  role="menu"
+                  aria-label="Share options"
+                >
+                  <button
+                    className="harelink__share-menu-item"
+                    type="button"
+                    role="menuitem"
+                    onClick={shareViaSystem}
+                    disabled={exporting !== null}
+                  >
+                    Share with the system
+                  </button>
+                  <button
+                    className="harelink__share-menu-item"
+                    type="button"
+                    role="menuitem"
+                    onClick={saveCardImage}
+                    disabled={!cardImage || exporting !== null}
+                  >
+                    Save image (PNG)
+                  </button>
+                  <button
+                    className="harelink__share-menu-item"
+                    type="button"
+                    role="menuitem"
+                    onClick={shareOnX}
+                  >
+                    Post on X
+                  </button>
+                  <button
+                    className="harelink__share-menu-item"
+                    type="button"
+                    role="menuitem"
+                    onClick={shareOnWhatsApp}
+                  >
+                    WhatsApp
+                  </button>
+                  <button
+                    className="harelink__share-menu-item"
+                    type="button"
+                    role="menuitem"
+                    onClick={closeShareMenu}
+                  >
+                    Close
+                  </button>
+                </div>
+              )}
+            </div>
             <button
               className="harelink__ghost-button"
               type="button"
@@ -361,10 +466,9 @@ export default function CreateForm({
           </div>
 
           <p className="harelink__field-hint">
-            Share card generates{" "}
-            <strong>a ready-to-post image</strong> (payment details + QR) for
-            X, WhatsApp or any app, just like exchange share cards. The payer
-            signs a transaction carrying memo{" "}
+            Share card gives you a ready-to-post image plus shortcuts for X,
+            WhatsApp and your system share sheet — the payer signs a
+            transaction carrying memo{" "}
             <strong>{created.memo}</strong>. Without that memo the payment
             cannot be matched back to this link.
           </p>
