@@ -1,4 +1,4 @@
-# Contributing to Stellar Paylink
+# Contributing to Stellar HareLink
 
 Thanks for considering a contribution. This is a community open-source utility: small, reviewable pull requests matter more than large ones.
 

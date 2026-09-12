@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import PaylinkFooter from "@/components/paylink-footer";
@@ -7,7 +8,38 @@ import { deriveStatus } from "@/lib/links/service";
 import { stellarNetworkConfig } from "@/lib/stellar/horizon";
 import { slugSchema } from "@/lib/validation/link-schema";
 import PayClient, { type PayLinkView } from "./pay-client";
-import "../../paylink.css";
+import "../../harelink.css";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const parsed = slugSchema.safeParse(slug);
+  if (!parsed.success) return {};
+  const record = await getLinkStore().findBySlug(parsed.data);
+  if (!record) return {};
+  const title = `${record.title} — Pay with HareLink`;
+  const description = `Pay ${record.amount} ${record.asset.type === "native" ? "XLM" : record.asset.code} to ${record.destination.slice(0, 6)}… via HareLink. One link. Direct settlement. Non-custodial on Stellar.`;
+  const url = `/pay/${record.slug}`;
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: "HareLink",
+      images: [{ url: "/harelink-verified.webp", width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -46,18 +78,19 @@ export default async function PayLink({
   };
 
   return (
-    <div className="paylink">
-      <div className="paylink__inner">
+    <div className="harelink">
+      <div className="harelink__inner">
         <PaylinkTopbar pill={networkLabel} />
 
-        <section className="paylink__hero">
-          <p className="paylink__eyebrow">Paylink | Tellus Cooperative</p>
-          <h1 className="paylink__title">
-            Pay this <span>Paylink.</span>
+        <section className="harelink__hero">
+          <p className="harelink__eyebrow">HARELINK / TELLUS COOPERATIVE</p>
+          <h1 className="harelink__title">
+            Pay this HareLink.
           </h1>
-          <p className="paylink__lede">
-            Review what is being requested, then sign it in your own wallet.
-            Stellar confirms the payment and the link flips to verified.
+          <p className="harelink__lede">
+            Review the request, then approve it from your own Stellar wallet.
+            Funds settle directly to the receiving address — HareLink never
+            takes custody.
           </p>
         </section>
 
@@ -69,23 +102,23 @@ export default async function PayLink({
           explorerBaseUrl={`https://stellar.expert/explorer/${network.network}/tx`}
         />
 
-        <section className="paylink__strip" aria-label="How it works">
-          <span className="paylink__strip-item">
-            <span className="paylink__strip-dot" aria-hidden />
+        <section className="harelink__strip" aria-label="How it works">
+          <span className="harelink__strip-item">
+            <span className="harelink__strip-dot" aria-hidden />
             Sign in your wallet
           </span>
-          <span className="paylink__strip-item">
-            <span className="paylink__strip-dot" aria-hidden />
+          <span className="harelink__strip-item">
+            <span className="harelink__strip-dot" aria-hidden />
             Funds settle to the receiver
           </span>
-          <span className="paylink__strip-item">
-            <span className="paylink__strip-dot" aria-hidden />
+          <span className="harelink__strip-item">
+            <span className="harelink__strip-dot" aria-hidden />
             Verified on-chain on Stellar
           </span>
         </section>
       </div>
 
-      {/* Outside paylink__inner: the footer spans the full width and applies
+      {/* Outside harelink__inner: the footer spans the full width and applies
           its own container, the same way index.html lays it out. */}
       <PaylinkFooter />
     </div>

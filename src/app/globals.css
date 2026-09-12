@@ -9,6 +9,10 @@
     --surface: #161616;
     --sand: #ece0cc;
     --teal: #3f8487;
+    /* HareLink product mark. The canonical terracotta reads at 4.2:1 on the
+       dark shell, so dark surfaces use the brightened tint instead. */
+    --terracotta: #b65a30;
+    --terracotta-bright: #e4793f;
     --orb-reveal: cubic-bezier(0.16, 1, 0.3, 1);
     --orb-soft: cubic-bezier(0.25, 0.8, 0.28, 1);
 

@@ -147,7 +147,7 @@ export default function PayClient({
 
       setPhase("building");
       const server = new Horizon.Server(horizonUrl, {
-        appName: "Stellar Paylink",
+        appName: "Stellar HareLink",
       });
       const loaded = await server.loadAccount(connection.address);
 
@@ -223,69 +223,69 @@ export default function PayClient({
 
   return (
     <>
-      <section className="paylink__builder" aria-label="Payment request">
-        <div className="paylink__panel paylink__panel--form">
-          <p className="paylink__preview-eyebrow">Payment request</p>
-          <h2 className="paylink__result-title">{link.title}</h2>
+      <section className="harelink__builder" aria-label="Payment request">
+        <div className="harelink__panel harelink__panel--form">
+          <p className="harelink__preview-eyebrow">Payment request</p>
+          <h2 className="harelink__result-title">{link.title}</h2>
           {link.description && (
-            <p className="paylink__lede">{link.description}</p>
+            <p className="harelink__lede">{link.description}</p>
           )}
 
-          <div className="paylink__preview-rows">
-            <div className="paylink__preview-row">
-              <span className="paylink__preview-row-label">Amount</span>
-              <span className="paylink__preview-row-value">
+          <div className="harelink__preview-rows">
+            <div className="harelink__preview-row">
+              <span className="harelink__preview-row-label">Amount</span>
+              <span className="harelink__preview-row-value">
                 {link.amount} {assetLabel(link.asset)}
               </span>
             </div>
-            <div className="paylink__preview-row">
-              <span className="paylink__preview-row-label">Sent to</span>
-              <span className="paylink__preview-row-value">
+            <div className="harelink__preview-row">
+              <span className="harelink__preview-row-label">Sent to</span>
+              <span className="harelink__preview-row-value">
                 {truncateAddress(link.destination)}
               </span>
             </div>
-            <div className="paylink__preview-row">
-              <span className="paylink__preview-row-label">Memo</span>
-              <span className="paylink__preview-row-value">{link.memo}</span>
+            <div className="harelink__preview-row">
+              <span className="harelink__preview-row-label">Memo</span>
+              <span className="harelink__preview-row-value">{link.memo}</span>
             </div>
-            <div className="paylink__preview-row">
-              <span className="paylink__preview-row-label">Network</span>
-              <span className="paylink__preview-row-value">
+            <div className="harelink__preview-row">
+              <span className="harelink__preview-row-label">Network</span>
+              <span className="harelink__preview-row-value">
                 Stellar · {networkLabel}
               </span>
             </div>
             {link.expiresAt && (
-              <div className="paylink__preview-row">
-                <span className="paylink__preview-row-label">Expires</span>
-                <span className="paylink__preview-row-value">
+              <div className="harelink__preview-row">
+                <span className="harelink__preview-row-label">Expires</span>
+                <span className="harelink__preview-row-value">
                   {new Date(link.expiresAt).toLocaleString()}
                 </span>
               </div>
             )}
           </div>
 
-          <p className="paylink__field-hint">
-            You sign in your own wallet. Paylink never receives custody of the
+          <p className="harelink__field-hint">
+            You sign in your own wallet. HareLink never receives custody of the
             funds and cannot move them.
           </p>
         </div>
 
-        <aside className="paylink__panel paylink__panel--preview">
-          <div className="paylink__preview-art">
+        <aside className="harelink__panel harelink__panel--preview">
+          <div className="harelink__preview-art">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/paylink-pending.webp" alt="" aria-hidden />
-            <span className="paylink__preview-status">
-              <span className="paylink__status-dot" aria-hidden />
+            <img src="/harelink-pending.webp" alt="" aria-hidden />
+            <span className="harelink__preview-status">
+              <span className="harelink__status-dot" aria-hidden />
               {expired ? "Expired" : "Pending"}
             </span>
           </div>
 
-          <div className="paylink__preview-body">
-            <p className="paylink__preview-eyebrow">You are paying</p>
-            <h2 className="paylink__preview-amount">
+          <div className="harelink__preview-body">
+            <p className="harelink__preview-eyebrow">You are paying</p>
+            <h2 className="harelink__preview-amount">
               {link.amount} <small>{assetLabel(link.asset)}</small>
             </h2>
-            <p className="paylink__field-hint">
+            <p className="harelink__field-hint">
               The memo <strong>{link.memo}</strong> travels with the
               transaction. It is how the network proof gets matched back to this
               link.
@@ -295,14 +295,14 @@ export default function PayClient({
       </section>
 
       {error && (
-        <p className="paylink__error" role="alert">
+        <p className="harelink__error" role="alert">
           {error}
         </p>
       )}
 
-      <section className="paylink__actions">
+      <section className="harelink__actions">
         <button
-          className="paylink__primary"
+          className="harelink__primary"
           type="button"
           onClick={pay}
           disabled={busy || expired}
@@ -314,7 +314,7 @@ export default function PayClient({
               : "Pay with Freighter"}{" "}
           {!expired && <span aria-hidden>↗</span>}
         </button>
-        <span className="paylink__tag">Non-custodial · {networkLabel}</span>
+        <span className="harelink__tag">Non-custodial · {networkLabel}</span>
       </section>
     </>
   );

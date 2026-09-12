@@ -2,7 +2,7 @@
 
 ## Scope
 
-Stellar Paylink is experimental, unaudited software running on Stellar Testnet. It is not a bank, exchange, custodian, or audited payment processor. Test with Testnet assets only.
+Stellar HareLink is experimental, unaudited software running on Stellar Testnet. It is not a bank, exchange, custodian, or audited payment processor. Test with Testnet assets only.
 
 ## Reporting a vulnerability
 

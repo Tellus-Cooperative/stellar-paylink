@@ -4,8 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#161616">
-  <meta name="description" content="Create a payment link and receive XLM or USDC on Stellar without giving up custody.">
-  <title>Paylink | Tellus Cooperative</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="description" content="Create and share non-custodial payment links on Stellar. HareLink is open source, wallet-signed, and built by Tellus Cooperative.">
+  <title>HareLink — Open-source Stellar Payment Links</title>
+  <meta property="og:title" content="HareLink — Open-source Stellar Payment Links">
+  <meta property="og:description" content="Create and share non-custodial payment links on Stellar. HareLink is open source, wallet-signed, and built by Tellus Cooperative.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/harelink-verified.webp">
   <style>
     @font-face {
       font-family: "Orbit Sans";
@@ -94,6 +99,29 @@
       text-decoration: none;
     }
 
+    .product-mark {
+      position: absolute;
+      top: 2.141745dvh;
+      left: 3.854167vw;
+      z-index: 4;
+      display: block;
+      width: clamp(34px, min(2.9vw, 4.4dvh), 50px);
+      color: #ffffff;
+      transition: color .3s var(--orb-soft), transform .3s var(--orb-soft);
+    }
+
+    .product-mark svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .product-mark:hover,
+    .product-mark:focus-visible {
+      color: #49898A;
+      transform: translateX(2px);
+    }
+
     .brand-mark img {
       position: relative;
       z-index: 2;
@@ -142,7 +170,7 @@
 
     .primary-nav a {
       display: inline-block;
-      font-size: clamp(13px, min(1.302083vw, 2.05dvh), 25px);
+      font-size: clamp(15px, 1vw, 16px);
       line-height: 1;
       text-decoration: none;
       pointer-events: auto;
@@ -206,7 +234,7 @@
       box-shadow: 0 0 0 .22em rgba(63,132,135,.14);
     }
 
-    .paylink-word {
+    .paylink-word, .harelink-word {
       position: absolute;
       top: 16.2dvh;
       left: 3.9vw;
@@ -215,22 +243,22 @@
       margin: 0;
       color: #fff;
       font-family: "Orbit Display", "Times New Roman", Times, serif;
-      font-size: min(18.75vw, 41dvh);
+      font-size: min(16.2vw, 41dvh);
       font-weight: 400;
       line-height: .82;
-      letter-spacing: .014em;
+      letter-spacing: .006em;
       white-space: nowrap;
       pointer-events: none;
     }
 
-    .paylink-word__mask,
-    .paylink-word__inner,
-    .paylink-word__white,
-    .paylink-word__teal { display: inline-block; }
+    .paylink-word__mask, .harelink-word__mask,
+    .paylink-word__inner, .harelink-word__inner,
+    .paylink-word__white, .harelink-word__white,
+    .paylink-word__teal, .harelink-word__teal { display: inline-block; }
 
-    .paylink-word__white { color: #fff; }
+    .paylink-word__white, .harelink-word__white { color: #fff; }
 
-    .paylink-word__teal {
+    .paylink-word__teal, .harelink-word__teal {
       background: linear-gradient(180deg, var(--sand) 0%, #76b8b5 46%, var(--teal) 100%);
       -webkit-background-clip: text;
       background-clip: text;
@@ -348,6 +376,11 @@
       animation: orb-quiet 620ms var(--orb-soft) 100ms forwards;
     }
 
+    html.anim .product-mark {
+      opacity: 0;
+      animation: orb-quiet 620ms var(--orb-soft) 160ms forwards;
+    }
+
     html.anim .primary-nav li { opacity: 0; animation: orb-dim 550ms var(--orb-soft) forwards; }
     html.anim .primary-nav li:nth-child(1) { animation-delay: 180ms; }
     html.anim .primary-nav li:nth-child(2) { animation-delay: 225ms; }
@@ -359,13 +392,13 @@
       animation: orb-quiet 620ms var(--orb-soft) 340ms forwards;
     }
 
-    html.anim .paylink-word__mask {
+    html.anim .paylink-word__mask, html.anim .harelink-word__mask {
       overflow: hidden;
       padding-top: .22em;
       margin-top: -.22em;
     }
 
-    html.anim .paylink-word__inner {
+    html.anim .paylink-word__inner, html.anim .harelink-word__inner {
       animation: orb-word 1150ms var(--orb-reveal) 300ms both;
     }
 
@@ -385,7 +418,7 @@
     }
 
     @media (max-width: 1200px), (orientation: portrait) {
-      .paylink-word {
+      .paylink-word, .harelink-word {
         left: 0;
         width: 100%;
         text-align: center;
@@ -400,6 +433,12 @@
         top: max(18px, 2.25dvh);
         left: max(18px, 5vw);
         width: 40px;
+      }
+
+      .product-mark {
+        top: max(18px, 2.25dvh);
+        left: max(18px, 5vw);
+        width: 42px;
       }
 
       .menu-toggle {
@@ -511,7 +550,7 @@
         text-decoration: none;
       }
 
-      .paylink-word { top: 19dvh; font-size: min(19vw, 23dvh); }
+      .paylink-word, .harelink-word { top: 19dvh; font-size: min(19vw, 23dvh); }
       .artifact { top: 18dvh; height: 76dvh; }
 
       .support-copy {
@@ -526,14 +565,15 @@
     }
 
     @media (max-aspect-ratio: 4 / 5) {
-      .paylink-word { top: 22dvh; font-size: min(18.8vw, 15.5dvh); }
+      .paylink-word, .harelink-word { top: 22dvh; font-size: min(18.8vw, 15.5dvh); }
       .artifact { top: 26dvh; left: 50%; height: min(58dvh, 104vw); }
     }
 
     @media (max-width: 520px) {
       .brand-mark { width: 38px; }
+      .product-mark { left: max(18px, 5vw); width: 40px; }
       .menu-toggle { width: 46px; height: 46px; }
-      .paylink-word { top: 24dvh; font-size: 18.4vw; letter-spacing: -.004em; }
+      .paylink-word, .harelink-word { top: 24dvh; font-size: 16vw; letter-spacing: -.004em; }
       .artifact { top: 29dvh; height: min(55dvh, 104vw); }
       .support-copy { width: 43vw; font-size: 14px; }
     }
@@ -542,6 +582,7 @@
       html.anim .stage { opacity: 0; animation: orb-dim 280ms ease forwards; }
       html.anim .stage * { animation: none !important; opacity: 1 !important; }
       .menu-sheet, .menu-scrim, .menu-toggle__lines, .menu-toggle__lines::before, .menu-toggle__lines::after { transition-duration: .01ms !important; }
+      .product-mark:hover, .product-mark:focus-visible { transform: none; }
     }
 
     .landing-info {
@@ -557,33 +598,36 @@
     .landing-features,
     .landing-steps,
     .landing-cta {
-      width: min(1080px, calc(100% - 9vw));
+      width: min(1280px, calc(100% - 96px));
       margin-inline: auto;
     }
 
     .landing-eyebrow {
-      margin: 0 0 26px;
+      margin: 0 0 20px;
       color: var(--teal);
-      font-size: clamp(12px, 1vw, 15px);
-      letter-spacing: .3em;
+      font-family: "Orbit Sans", Arial, sans-serif;
+      font-size: clamp(11px, 0.85vw, 12px);
+      font-weight: 500;
+      letter-spacing: .28em;
       text-transform: uppercase;
     }
 
     .landing-title {
-      max-width: 13em;
-      margin: 0 0 22px;
+      max-width: 12em;
+      margin: 0 0 18px;
       font-family: "Orbit Display", "Times New Roman", Times, serif;
-      font-size: clamp(42px, 7vw, 92px);
+      font-size: clamp(42px, 4.6vw, 68px);
       font-weight: 400;
-      line-height: .98;
-      letter-spacing: -.012em;
+      line-height: .95;
+      letter-spacing: -.02em;
     }
 
     .landing-lede {
-      max-width: 56ch;
+      max-width: 54ch;
       margin: 0;
       color: rgba(255,255,255,.72);
-      font-size: clamp(16px, 1.5vw, 21px);
+      font-family: "Orbit Sans", Arial, sans-serif;
+      font-size: clamp(17px, 1.2vw, 19px);
       line-height: 1.55;
     }
 
@@ -689,7 +733,7 @@
     .landing-footer__inner {
       position: relative;
       z-index: 1;
-      width: min(1080px, calc(100% - 9vw));
+      width: min(1280px, calc(100% - 96px));
       margin-inline: auto;
     }
 
@@ -707,7 +751,7 @@
       font-family: "Orbit Sans", Arial, Helvetica, sans-serif;
       font-size: clamp(20px, 1.9vw, 28px);
       font-weight: 600;
-      letter-spacing: .3em;
+      letter-spacing: .22em;
       text-transform: uppercase;
       line-height: 1;
     }
@@ -860,10 +904,11 @@
 </head>
 <body>
   <main class="viewport" id="home">
-    <section class="stage" aria-labelledby="paylink-title">
-      <a class="brand-mark" href="https://telluscoop.org/" aria-label="Tellus Cooperative">
-        <span class="brand-mark__fallback" aria-hidden="true">T</span>
-        <img src="/tellus-icon.png" alt="" onload="this.closest('.brand-mark').classList.add('is-loaded')">
+    <section class="stage" aria-labelledby="harelink-title">
+      <a class="product-mark" href="#home" aria-label="HareLink">
+        <svg viewBox="0 0 686 532" fill="none" aria-hidden="true">
+          <path d="M553.638 0.0100137C568.48 -0.436356 583.953 14.1298 591.509 25.7905C616.987 65.1262 619.638 116.596 617.379 162.095C616.681 176.002 613.503 190.06 613.068 203.989C612.505 221.401 631.425 233.812 642.03 245.22C692.135 293.769 711.949 339.288 631.658 368.452C624.996 370.871 606.559 375.702 601.312 380.845C599.848 384.201 603.008 389.693 605.12 392.24C630.396 423.033 662.646 450.813 675.56 489.744C687.047 524.357 655.574 541.795 628.112 523.941C607.233 510.366 590.682 484.704 575.289 465.129C563.784 450.403 551.642 436.197 538.887 422.543C516.41 398.565 491.036 377.477 463.347 359.763C402.839 321.133 340.078 303.144 268.238 308.942C203.165 314.19 145.722 335.431 90.9877 370.522C81.5404 376.694 72.2701 383.129 63.1884 389.828C54.3424 396.398 28.6557 418.777 20.3173 419.169C-26.4463 421.367 21.0226 348.509 29.2924 337.188C51.8173 304.821 84.6693 274.372 115.316 249.604C124.884 241.87 136.899 234.437 146 226.581L146.681 225.987C131.144 225.044 119.685 225.295 106.239 216.643C81.5919 200.771 79.4549 170.002 95.891 147.141C111.455 125.72 137.27 111.707 162.606 106.981C203.14 99.4213 193.231 132.175 194.198 157.655C194.272 159.608 195.17 160.648 196.656 161.739C202.002 161.668 218.298 152.586 225.424 150.303C233.281 147.531 241.867 145.303 249.857 143.22C338.688 120.064 425.384 159.698 490.062 219.374C495.989 224.848 505.578 234.976 512.332 238.876C516.379 241.258 521.253 241.821 525.735 240.419C529.586 239.188 533.187 236.047 535.22 232.441C536.634 230.016 534.577 226.808 533.217 224.72C500.251 173.908 458.057 123.219 454.236 60.12C453.281 44.3929 458.326 3.00602 483.878 15.8932C496.014 22.0144 505.057 37.8315 511.652 49.2038C536.138 101.731 547.711 159.698 564.09 215.082C570.096 212.559 577.665 212.07 581.785 208.958C581.381 199.55 578.338 190.099 576.44 180.948C571.352 156.382 516.459 8.25102 553.638 0.0100137Z" fill="currentColor"/>
+        </svg>
       </a>
 
       <ul class="primary-nav" aria-label="Primary navigation">
@@ -873,23 +918,23 @@
         <li><a href="https://github.com/Tellus-Cooperative">GitHub</a></li>
       </ul>
 
-      <a class="system-pill" href="/create">Create a Paylink</a>
+      <a class="system-pill" href="/create">Create a HareLink</a>
 
-      <h1 class="paylink-word" id="paylink-title" aria-label="Paylink">
-        <span class="paylink-word__mask">
-          <span class="paylink-word__inner">
-            <span class="paylink-word__white">PAY</span><span class="paylink-word__teal">LINK</span>
+      <h1 class="paylink-word harelink-word" id="harelink-title" aria-label="HareLink">
+        <span class="paylink-word__mask harelink-word__mask">
+          <span class="paylink-word__inner harelink-word__inner">
+            <span class="paylink-word__white harelink-word__white">HARE</span><span class="paylink-word__teal harelink-word__teal">LINK</span>
           </span>
         </span>
       </h1>
 
       <div class="artifact" aria-label="Interlocking payment links transitioning from pending to verified">
-        <img class="artifact__sizer" src="/paylink-pending.webp" alt="" aria-hidden="true">
+        <img class="artifact__sizer" src="/harelink-pending.webp" alt="" aria-hidden="true">
         <div class="artifact__layer artifact__layer--bg">
-          <img src="/paylink-pending.webp" alt="Sculptural teal payment links">
+          <img src="/harelink-pending.webp" alt="Sculptural teal payment links">
         </div>
         <div class="artifact__layer artifact__layer--top" aria-hidden="true">
-          <img src="/paylink-verified.webp" alt="">
+          <img src="/harelink-verified.webp" alt="">
         </div>
       </div>
 
@@ -917,23 +962,23 @@
           <a href="https://github.com/Tellus-Cooperative">Open source</a>
           <a href="https://github.com/Tellus-Cooperative">GitHub</a>
         </nav>
-        <a class="menu-sheet__cta" href="/create"><span>Create a Paylink</span><span aria-hidden="true">↗</span></a>
+        <a class="menu-sheet__cta" href="/create"><span>Create a HareLink</span><span aria-hidden="true">↗</span></a>
       </aside>
     </section>
   </main>
 
   <section class="landing-info" id="how-it-works">
     <div class="landing-info__inner">
-      <p class="landing-eyebrow">Paylink | Tellus Cooperative</p>
-      <h2 class="landing-title">Payments, expressed as a link.</h2>
-      <p class="landing-lede">Paylink turns a Stellar payment into a shareable link. You build it in your wallet, share it anywhere, and whoever you send it to pays without signing up anywhere. The network confirms the payment, and funds settle straight to your address.</p>
+      <p class="landing-eyebrow">OPEN SOURCE / BUILT ON STELLAR</p>
+      <h2 class="landing-title">Payment links, without custody.</h2>
+      <p class="landing-lede">Create a payment request, share the link, and let anyone approve it from their own Stellar wallet. Funds settle directly to the receiving address.</p><p class="landing-lede" style="margin-top:12px;color:rgba(255,255,255,.55);font-size:15px;">One link. Direct settlement. &middot; Create once. Share anywhere.</p>
     </div>
 
     <div class="landing-features">
       <article class="landing-feature">
         <span class="landing-feature__num">01</span>
         <h3 class="landing-feature__title">Create</h3>
-        <p class="landing-feature__copy">Open the Paylink builder, choose the amount, the asset (XLM, USDC or more) and an optional memo, then sign it with your Stellar wallet.</p>
+        <p class="landing-feature__copy">Open the HareLink builder, choose the amount, the asset (XLM, USDC or more) and an optional memo, then sign it with your Stellar wallet.</p>
       </article>
       <article class="landing-feature">
         <span class="landing-feature__num">02</span>
@@ -954,7 +999,8 @@
     </div>
 
     <div class="landing-cta">
-      <a class="landing-cta__link" href="/create">Create a Paylink <span aria-hidden="true">↗</span></a>
+      <a class="landing-cta__link" href="/create">Create a payment link <span aria-hidden="true">↗</span></a>
+      <a class="landing-cta__link" href="https://github.com/Tellus-Cooperative/stellar-paylink" target="_blank" rel="noreferrer" style="background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;">View on GitHub <span aria-hidden="true">↗</span></a>
       <span class="landing-cta__tag">Non-custodial · Testnet</span>
     </div>
   </section>
@@ -992,7 +1038,7 @@
     <div class="landing-footer__inner">
       <div class="landing-footer__grid">
         <div class="landing-footer__brand">
-          <span class="landing-footer__word">PAY<span>LINK</span></span>
+          <span class="landing-footer__word">HARE<span>LINK</span></span>
           <p class="landing-footer__tag">Payments for the cooperative web, built by Tellus Cooperative on the Stellar network.</p>
           <a class="landing-footer__cta" href="https://blog.telluscoop.com/subscribe">Subscribe to the newsletter <span aria-hidden="true">↗</span></a>
         </div>
@@ -1269,7 +1315,7 @@
       window.addEventListener("unhandledrejection", (event) => console.error("[trail] promise rechazada:", event.reason));
 
       const root = document.documentElement;
-      const animated = Array.from(document.querySelectorAll(".brand-mark, .primary-nav li, .system-pill, .paylink-word__inner, .artifact, .support-copy__inner, .testnet-note, .menu-toggle"));
+      const animated = Array.from(document.querySelectorAll(".brand-mark, .product-mark, .primary-nav li, .system-pill, .paylink-word__inner, .harelink-word__inner, .artifact, .support-copy__inner, .testnet-note, .menu-toggle"));
       let animationCount = 0;
 
       const finishEntrance = () => root.classList.remove("anim");

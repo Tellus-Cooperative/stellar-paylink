@@ -16,14 +16,53 @@ const orbitDisplay = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Paylink | Tellus Cooperative",
+  title: {
+    default: "HareLink — Open-source Stellar Payment Links",
+    template: "%s | HareLink",
+  },
   description:
-    "Create a payment link and receive XLM or USDC on Stellar without giving up custody.",
+    "Create and share non-custodial payment links on Stellar. HareLink is open source, wallet-signed, and built by Tellus Cooperative.",
+  applicationName: "HareLink",
+  authors: [{ name: "Tellus Cooperative", url: "https://telluscoop.org" }],
+  creator: "Tellus Cooperative",
+  metadataBase: new URL(
+    (process.env.NEXT_PUBLIC_APP_URL && process.env.NEXT_PUBLIC_APP_URL.trim().length > 0
+      ? process.env.NEXT_PUBLIC_APP_URL
+      : "https://harelink.telluscoop.com")
+  ),
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: "HareLink",
+    title: "HareLink — Open-source Stellar Payment Links",
+    description:
+      "Create and share non-custodial payment links on Stellar. HareLink is open source, wallet-signed, and built by Tellus Cooperative.",
+    images: [{ url: "/harelink-verified.webp", width: 1200, height: 630, alt: "HareLink — Open-source Stellar Payment Links" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HareLink — Open-source Stellar Payment Links",
+    description:
+      "Create and share non-custodial payment links on Stellar. HareLink is open source, wallet-signed, and built by Tellus Cooperative.",
+  },
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/favicon.svg" }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: "HareLink",
+    statusBarStyle: "black-translucent",
+  },
+  manifest: "/manifest.webmanifest",
 };
 
 export const viewport: Viewport = {
   themeColor: "#161616",
   viewportFit: "cover",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({

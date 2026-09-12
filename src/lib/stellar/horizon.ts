@@ -19,7 +19,7 @@ export function stellarNetworkConfig(): StellarNetworkConfig {
 
 export function createHorizonClient(): Horizon.Server {
   const { horizonUrl } = stellarNetworkConfig();
-  return new Horizon.Server(horizonUrl, { appName: "Stellar Paylink" });
+  return new Horizon.Server(horizonUrl, { appName: "Stellar HareLink" });
 }
 
 export function explorerTransactionUrl(

@@ -17,7 +17,7 @@ export default function NotFound() {
         />
       </video>
 
-      <div className="not-found__brand" role="img" aria-label="Paylink">
+      <div className="not-found__brand" role="img" aria-label="HareLink">
         <svg viewBox="0 0 54 40" fill="none" aria-hidden="true">
           <path d="M38 0H26V12H38V0Z" fill="white" />
           <path d="M54 12H38V28H54V12Z" fill="white" />
@@ -27,7 +27,7 @@ export default function NotFound() {
           <path d="M16 2H6V12H16V2Z" fill="white" />
           <path d="M6 12H0V18H6V12Z" fill="white" />
         </svg>
-        <span className="not-found__brand-name">PAYLINK</span>
+        <span className="not-found__brand-name">HARELINK</span>
       </div>
 
       <div className="not-found__content">

@@ -1,4 +1,4 @@
-# Stellar Paylink
+# Stellar HareLink
 
 **Create a payment link. Get paid on Stellar.**
 
@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/license-MIT-005B52)](#license)
 [![Built by Tellus](https://img.shields.io/badge/built%20by-Tellus%20Cooperative-ECE0CC)](https://telluscoop.org/)
 
-Stellar Paylink is an open-source, non-custodial web application for creating and paying shareable payment requests on Stellar. A recipient defines an amount and asset, shares a link or QR code, and the payer approves the transaction in their own wallet.
+Stellar HareLink is an open-source, non-custodial web application for creating and paying shareable payment requests on Stellar. A recipient defines an amount and asset, shares a link or QR code, and the payer approves the transaction in their own wallet.
 
 The application never requests, receives, or stores a private key or seed phrase.
 
@@ -15,7 +15,7 @@ The application never requests, receives, or stores a private key or seed phrase
 
 ## Why this project exists
 
-Receiving a payment on Stellar should not require sending a wallet address, amount, asset, and memo as separate instructions. Stellar Paylink packages those details into one human-readable page while preserving self-custody.
+Receiving a payment on Stellar should not require sending a wallet address, amount, asset, and memo as separate instructions. Stellar HareLink packages those details into one human-readable page while preserving self-custody.
 
 This is a public, community-owned utility, not a merchant platform. Unlike hosted payment or checkout services, it is meant to be forked, adapted to a local asset or community, and run under an MIT license. Its differentiator is server-side verification: a link changes to `paid` only when the server confirms the transaction against Stellar network data, so pretending to pay is not enough.
 
@@ -113,7 +113,7 @@ All API responses use a stable envelope: `{ ok: true, data }` or `{ ok: false, e
 ## Repository structure
 
 ```text
-stellar-paylink/
+stellar-harelink/
 ├── src/
 │   ├── app/
 │   │   ├── api/links/            # POST /api/links
@@ -153,8 +153,8 @@ The application must not silently substitute an issuer. A fork must explicitly c
 ## Local development
 
 ```bash
-git clone https://github.com/Tellus-Cooperative/stellar-paylink.git
-cd stellar-paylink
+git clone https://github.com/Tellus-Cooperative/stellar-harelink.git
+cd stellar-harelink
 pnpm install
 cp .env.example .env.local
 pnpm dev

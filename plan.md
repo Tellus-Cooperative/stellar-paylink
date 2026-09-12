@@ -1,4 +1,4 @@
-# Stellar Paylink — Delivery Plan
+# Stellar HareLink — Delivery Plan
 
 **Release target:** `v0.1.0` on September 16, 2026
 

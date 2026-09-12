@@ -1,5 +1,5 @@
 import Link from "next/link";
-import BrandMark from "@/components/brand-mark";
+import PaylinkMark from "@/components/paylink-mark";
 
 const GITHUB_URL = "https://github.com/Tellus-Cooperative";
 
@@ -9,10 +9,15 @@ export default function PaylinkTopbar({
   pill?: string;
 }) {
   return (
-    <header className="paylink__topbar">
-      <BrandMark />
+    <header className="harelink__topbar">
+      <Link href="/" className="harelink__lockup" aria-label="HareLink home">
+        <PaylinkMark />
+        <span className="harelink__wordmark" aria-hidden="true">
+          HARE<span>LINK</span>
+        </span>
+      </Link>
 
-      <ul className="paylink__top-nav" aria-label="Primary navigation">
+      <ul className="harelink__top-nav" aria-label="Primary navigation">
         <li>
           <Link href="/#home">Home</Link>
         </li>
@@ -31,7 +36,7 @@ export default function PaylinkTopbar({
         </li>
       </ul>
 
-      <span className="paylink__pill">{pill}</span>
+      <span className="harelink__pill">{pill}</span>
     </header>
   );
 }

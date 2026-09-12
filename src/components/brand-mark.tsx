@@ -13,12 +13,12 @@ export default function BrandMark() {
 
   return (
     <a
-      className={`paylink__brand${loaded ? " is-loaded" : ""}`}
+      className={`harelink__brand${loaded ? " is-loaded" : ""}`}
       href="https://telluscoop.org/"
       aria-label="Tellus Cooperative"
     >
       {!loaded && (
-        <span className="paylink__brand-fallback" aria-hidden>
+        <span className="harelink__brand-fallback" aria-hidden>
           T
         </span>
       )}

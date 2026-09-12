@@ -1,10 +1,10 @@
-# Stellar Paylink — Roadmap
+# Stellar HareLink — Roadmap
 
 This roadmap separates the seven-day `v0.1.0` release from later product development. Dates after the first release are directional and should change only after usage and contributor feedback.
 
 ## Project framing
 
-Paylink is a community open-source utility, not a hackathon demo. It competes on openness: a forkable verification-server for payment links that produces a provable receipt. The payment-link directory is crowded with merchant platforms, but a small, MIT-licensed, non-custodial utility with strict server-side verification remains a real gap. Design for honoring external contributions and measuring community signals (forks, PRs, ten-minute setups), not vanity metrics.
+HareLink is a community open-source utility, not a hackathon demo. It competes on openness: a forkable verification-server for payment links that produces a provable receipt. The payment-link directory is crowded with merchant platforms, but a small, MIT-licensed, non-custodial utility with strict server-side verification remains a real gap. Design for honoring external contributions and measuring community signals (forks, PRs, ten-minute setups), not vanity metrics.
 
 ## Checklist operativo v0.1.0
 
@@ -48,7 +48,7 @@ Fuente de verdad para marcar avance. Solo se marca `[x]` lo verificado con coman
 - [x] Corregido `Number(amount)` en `src/app/create/create-form.tsx` (usa `parseAmount().ok`, sin float).
 - [x] Pass accesibilidad estático en `/create` y `/pay/[slug]`: inputs con label, botones con nombre, imágenes decorativas con `alt=""`/aria-hidden, errores con `role="alert"`, estados con texto, controles nativos por teclado. Falta verificación con lector de pantalla.
 - [ ] Screenshots, demo corta, deploy `v0.1.0-rc.1`, prueba clean-room de fork, tag `v0.1.0`.
-- [x] Deploy en Vercel (2026-09-11): `https://stellar-paylink-lac.vercel.app` en verde (landing 200, imágenes 200, API 201). Hallazgos: preset Next.js vía `vercel.json`, landing desde `public/` + `outputFileTracingIncludes`, imágenes en `public/`. Pendiente: `DATABASE_URL` (Neon) + `NEXT_PUBLIC_APP_URL` + redeploy final.
+- [x] Deploy en Vercel (2026-09-11): `https://stellar-paylink-lac.vercel.app` en verde (landing 200, imágenes 200, API 201). Hallazgos: preset Next.js vía `vercel.json`, landing desde `public/` + `outputFileTracingIncludes`, imágenes en `public/`. Neon conectado: migración aplicada, env vars (`DATABASE_URL` pooled+SSL, `NEXT_PUBLIC_APP_URL`, `USDC_ASSET_ISSUER`) y e2e en prod verificado (link `mjfc5uawvCdt`, pago 1.5 XLM tx `4bb4d15b…c3caf1` → `paid`, fila confirmada en Neon).
 
 ## Release sequence
 

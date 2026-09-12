@@ -3,6 +3,10 @@
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 
+import { ShinyButton } from "@/components/ui/shiny-button";
+
+
+
 // Carga diferida: evita que react-qr-code entre al chunk inicial del formulario.
 // Se desactiva SSR porque el QR solo se renderiza tras crear el enlace.
 const QRCode = dynamic(
@@ -180,14 +184,45 @@ export default function CreateForm({
     }
   }
 
+  function shareMessage(): string {
+    if (!created) return "";
+    return `HareLink — One link. Direct settlement.\n${created.title}: ${created.amount} ${created.assetLabel} → ${created.paymentUrl}`;
+  }
+
   async function copyLink() {
     if (!created) return;
+    const message = shareMessage();
+    // Web Share API cuando esté disponible (móvil), fallback a clipboard
     try {
-      await navigator.clipboard.writeText(created.paymentUrl);
+      if (navigator.share) {
+        await navigator.share({ title: `HareLink: ${created.title}`, text: message, url: created.paymentUrl });
+        return;
+      }
+    } catch {
+      // usuario canceló o share falló, continuar a clipboard
+    }
+    try {
+      await navigator.clipboard.writeText(message);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
       setError("Clipboard is blocked. Copy the link manually.");
+    }
+  }
+
+  async function shareNative() {
+    if (!created) return;
+    const message = shareMessage();
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `HareLink: ${created.title}`, text: message, url: created.paymentUrl });
+      } else {
+        await navigator.clipboard.writeText(message);
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 2000);
+      }
+    } catch {
+      // cancelado por usuario
     }
   }
 
@@ -202,31 +237,38 @@ export default function CreateForm({
 
   if (created) {
     return (
-      <section className="paylink__builder" aria-label="Payment link created">
-        <div className="paylink__panel paylink__panel--form">
-          <p className="paylink__preview-eyebrow">Link ready</p>
-          <h2 className="paylink__result-title">{created.title}</h2>
+      <section className="harelink__builder" aria-label="Payment link created">
+        <div className="harelink__panel harelink__panel--form">
+          <p className="harelink__preview-eyebrow">Link ready</p>
+          <h2 className="harelink__result-title">{created.title}</h2>
 
-          <label className="paylink__field">
-            <span className="paylink__field-label">Share this link</span>
+          <label className="harelink__field">
+            <span className="harelink__field-label">Share this link</span>
             <input
-              className="paylink__text-input"
+              className="harelink__text-input"
               value={created.paymentUrl}
               readOnly
               onFocus={(event) => event.currentTarget.select()}
             />
           </label>
 
-          <div className="paylink__result-actions">
+          <div className="harelink__result-actions">
             <button
-              className="paylink__primary"
+              className="harelink__primary"
               type="button"
               onClick={copyLink}
             >
               {copied ? "Copied" : "Copy link"} <span aria-hidden>↗</span>
             </button>
+            <button
+              className="harelink__ghost-button"
+              type="button"
+              onClick={shareNative}
+            >
+              Share
+            </button>
             <a
-              className="paylink__ghost-button"
+              className="harelink__ghost-button"
               href={`/pay/${created.slug}`}
               target="_blank"
               rel="noreferrer"
@@ -234,7 +276,7 @@ export default function CreateForm({
               Open payment page
             </a>
             <button
-              className="paylink__ghost-button"
+              className="harelink__ghost-button"
               type="button"
               onClick={reset}
             >
@@ -242,51 +284,51 @@ export default function CreateForm({
             </button>
           </div>
 
-          <p className="paylink__field-hint">
+          <p className="harelink__field-hint">
             The payer signs a transaction carrying memo{" "}
             <strong>{created.memo}</strong>. Without that memo the payment
             cannot be matched back to this link.
           </p>
         </div>
 
-        <aside className="paylink__panel paylink__panel--preview">
-          <div className="paylink__preview-art">
+        <aside className="harelink__panel harelink__panel--preview">
+          <div className="harelink__preview-art">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              className="paylink__preview-arrow"
+              className="harelink__preview-arrow"
               src="/create-share-arrow.png"
               alt="Glass arrow pointing upward, representing a shared payment link"
             />
           </div>
 
-          <div className="paylink__preview-body">
-            <p className="paylink__preview-eyebrow">Awaiting payment</p>
-            <h2 className="paylink__preview-amount">
+          <div className="harelink__preview-body">
+            <p className="harelink__preview-eyebrow">Awaiting payment</p>
+            <h2 className="harelink__preview-amount">
               {created.amount} <small>{created.assetLabel}</small>
             </h2>
 
-            <div className="paylink__preview-rows">
-              <div className="paylink__preview-row">
-                <span className="paylink__preview-row-label">Sent to</span>
-                <span className="paylink__preview-row-value">
+            <div className="harelink__preview-rows">
+              <div className="harelink__preview-row">
+                <span className="harelink__preview-row-label">Sent to</span>
+                <span className="harelink__preview-row-value">
                   {truncateAddress(created.destination)}
                 </span>
               </div>
-              <div className="paylink__preview-row">
-                <span className="paylink__preview-row-label">Memo</span>
-                <span className="paylink__preview-row-value">
+              <div className="harelink__preview-row">
+                <span className="harelink__preview-row-label">Memo</span>
+                <span className="harelink__preview-row-value">
                   {created.memo}
                 </span>
               </div>
-              <div className="paylink__preview-row">
-                <span className="paylink__preview-row-label">Network</span>
-                <span className="paylink__preview-row-value">
+              <div className="harelink__preview-row">
+                <span className="harelink__preview-row-label">Network</span>
+                <span className="harelink__preview-row-value">
                   Stellar · {networkLabel}
                 </span>
               </div>
-              <div className="paylink__preview-row">
-                <span className="paylink__preview-row-label">Scan to pay</span>
-                <span className="paylink__preview-row-value">
+              <div className="harelink__preview-row">
+                <span className="harelink__preview-row-label">Scan to pay</span>
+                <span className="harelink__preview-row-value">
                   <span
                     style={{
                       display: "inline-block",
@@ -313,20 +355,20 @@ export default function CreateForm({
 
   return (
     <form onSubmit={submit}>
-      <section className="paylink__builder" aria-label="Payment link builder">
-        <div className="paylink__panel paylink__panel--form">
-          <div className="paylink__step">
-            <span className="paylink__step-num">01</span>
-            <div className="paylink__step-body">
+      <section className="harelink__builder" aria-label="Payment link builder">
+        <div className="harelink__panel harelink__panel--form">
+          <div className="harelink__step">
+            <span className="harelink__step-num">01</span>
+            <div className="harelink__step-body">
               <label
-                className="paylink__step-label"
-                htmlFor="paylink-title"
+                className="harelink__step-label"
+                htmlFor="harelink-title"
               >
                 What is it for
               </label>
               <input
-                id="paylink-title"
-                className="paylink__text-input"
+                id="harelink-title"
+                className="harelink__text-input"
                 type="text"
                 maxLength={120}
                 placeholder="Invoice #1234"
@@ -337,19 +379,19 @@ export default function CreateForm({
             </div>
           </div>
 
-          <div className="paylink__step">
-            <span className="paylink__step-num">02</span>
-            <div className="paylink__step-body">
+          <div className="harelink__step">
+            <span className="harelink__step-num">02</span>
+            <div className="harelink__step-body">
               <label
-                className="paylink__step-label"
-                htmlFor="paylink-amount"
+                className="harelink__step-label"
+                htmlFor="harelink-amount"
               >
                 Amount
               </label>
-              <span className="paylink__amount">
+              <span className="harelink__amount">
                 <input
-                  id="paylink-amount"
-                  className="paylink__amount-input"
+                  id="harelink-amount"
+                  className="harelink__amount-input"
                   type="text"
                   inputMode="decimal"
                   placeholder="25.00"
@@ -358,7 +400,7 @@ export default function CreateForm({
                   required
                 />
                 <select
-                  className="paylink__amount-select"
+                  className="harelink__amount-select"
                   aria-label="Asset for amount"
                   value={selectedAssetKey}
                   onChange={(event) => setSelectedAssetKey(event.target.value)}
@@ -373,12 +415,12 @@ export default function CreateForm({
             </div>
           </div>
 
-          <div className="paylink__step">
-            <span className="paylink__step-num">03</span>
-            <div className="paylink__step-body">
-              <span className="paylink__step-label">Asset</span>
+          <div className="harelink__step">
+            <span className="harelink__step-num">03</span>
+            <div className="harelink__step-body">
+              <span className="harelink__step-label">Asset</span>
               <div
-                className="paylink__asset-row"
+                className="harelink__asset-row"
                 role="group"
                 aria-label="Asset to charge"
               >
@@ -388,7 +430,7 @@ export default function CreateForm({
                   return (
                     <button
                       key={key}
-                      className={`paylink__asset-chip${
+                      className={`harelink__asset-chip${
                         active ? " is-active" : ""
                       }`}
                       type="button"
@@ -401,7 +443,7 @@ export default function CreateForm({
                 })}
               </div>
               {assets.length === 1 && (
-                <span className="paylink__field-hint">
+                <span className="harelink__field-hint">
                   Only XLM is enabled. Set USDC_ASSET_ISSUER to offer credit
                   assets.
                 </span>
@@ -409,18 +451,18 @@ export default function CreateForm({
             </div>
           </div>
 
-          <div className="paylink__step">
-            <span className="paylink__step-num">04</span>
-            <div className="paylink__step-body">
+          <div className="harelink__step">
+            <span className="harelink__step-num">04</span>
+            <div className="harelink__step-body">
               <label
-                className="paylink__step-label"
-                htmlFor="paylink-destination"
+                className="harelink__step-label"
+                htmlFor="harelink-destination"
               >
                 Receiving address
               </label>
               <input
-                id="paylink-destination"
-                className="paylink__text-input"
+                id="harelink-destination"
+                className="harelink__text-input"
                 type="text"
                 spellCheck={false}
                 autoComplete="off"
@@ -430,31 +472,31 @@ export default function CreateForm({
                 required
               />
               <button
-                className="paylink__ghost-button"
+                className="harelink__ghost-button"
                 type="button"
                 onClick={useWalletAddress}
                 disabled={connecting}
               >
                 {connecting ? "Connecting…" : "Use my Freighter address"}
               </button>
-              <span className="paylink__field-hint">
-                Funds settle straight here. Paylink never takes custody.
+              <span className="harelink__field-hint">
+                Funds settle straight here. HareLink never takes custody.
               </span>
             </div>
           </div>
 
-          <div className="paylink__step">
-            <span className="paylink__step-num">05</span>
-            <div className="paylink__step-body">
-              <label className="paylink__step-label" htmlFor="paylink-memo">
+          <div className="harelink__step">
+            <span className="harelink__step-num">05</span>
+            <div className="harelink__step-body">
+              <label className="harelink__step-label" htmlFor="harelink-memo">
                 Memo / Optional
               </label>
               <input
-                id="paylink-memo"
-                className="paylink__text-input"
+                id="harelink-memo"
+                className="harelink__text-input"
                 type="text"
                 maxLength={500}
-                placeholder="Coffee for the team"
+                placeholder="e.g. 12345"
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
               />
@@ -476,55 +518,51 @@ export default function CreateForm({
             </div>
           </div>
 
-          <button
-            className="paylink__primary"
-            type="submit"
-            disabled={!canSubmit}
-          >
+          <ShinyButton type="submit" disabled={!canSubmit || submitting}>
             {submitting ? "Creating…" : "Create payment link →"}
-          </button>
+          </ShinyButton>
         </div>
 
-        <aside className="paylink__panel paylink__panel--preview">
-          <div className="paylink__preview-art">
+        <aside className="harelink__panel harelink__panel--preview">
+          <div className="harelink__preview-art">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              className="paylink__preview-arrow"
+              className="harelink__preview-arrow"
               src="/create-share-arrow.png"
               alt="Glass arrow pointing upward, representing a shared payment link"
             />
           </div>
 
-          <div className="paylink__preview-body">
-            <p className="paylink__preview-eyebrow">
+          <div className="harelink__preview-body">
+            <p className="harelink__preview-eyebrow">
               Live preview / Testnet
-              <span className="paylink__preview-badge">
-                <span className="paylink__preview-badge-dot" aria-hidden />
+              <span className="harelink__preview-badge">
+                <span className="harelink__preview-badge-dot" aria-hidden />
                 TESTNET
               </span>
             </p>
-            <h2 className="paylink__preview-amount">
+            <h2 className="harelink__preview-amount">
               {amount || "25.00"} <small>{assetLabel(selectedAsset)}</small>
             </h2>
-            <p className="paylink__preview-sub">
+            <p className="harelink__preview-sub">
               <span>For {title || "Invoice #1234"}</span>
               <span>
                 {destination ? truncateAddress(destination) : "GBC2…3Z7K"}
               </span>
             </p>
-            <span className="paylink__preview-link">paylink.to/8F3K9</span>
+            <span className="harelink__preview-link">harelink.to/8F3K9</span>
           </div>
         </aside>
       </section>
 
       {error && (
-        <p className="paylink__error" role="alert">
+        <p className="harelink__error" role="alert">
           {error}
         </p>
       )}
 
-      <section className="paylink__actions" style={{ justifyContent: "flex-end" }}>
-        <span className="paylink__tag">Non-custodial · {networkLabel}</span>
+      <section className="harelink__actions" style={{ justifyContent: "flex-end" }}>
+        <span className="harelink__tag">Non-custodial · {networkLabel}</span>
       </section>
     </form>
   );

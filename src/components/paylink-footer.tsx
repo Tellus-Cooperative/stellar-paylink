@@ -123,16 +123,16 @@ export default function PaylinkFooter() {
   }, []);
 
   return (
-    <footer className="paylink__foot">
+    <footer className="harelink__foot">
       <div
-        className="paylink__glow waves-off"
+        className="harelink__glow waves-off"
         ref={glowRef}
         style={{ transform: `scaleY(${MIN_REVEAL})` }}
         aria-hidden="true"
       >
         <svg viewBox="0 0 1271 599" preserveAspectRatio="none" fill="none">
           <defs>
-            <linearGradient id="paylink-foot-grad" x1="0" y1="1" x2="0" y2="0">
+            <linearGradient id="harelink-foot-grad" x1="0" y1="1" x2="0" y2="0">
               <stop offset="0" stopColor="#0A2B2C" />
               <stop offset="0.25" stopColor="#175152" />
               <stop offset="0.45" stopColor="#3F8487" />
@@ -141,7 +141,7 @@ export default function PaylinkFooter() {
               <stop offset="1" stopColor="#ECE0CC00" />
             </linearGradient>
             <filter
-              id="paylink-foot-blur"
+              id="harelink-foot-blur"
               x="-50%"
               y="-50%"
               width="200%"
@@ -150,32 +150,32 @@ export default function PaylinkFooter() {
               <feGaussianBlur stdDeviation="15" />
             </filter>
           </defs>
-          <g filter="url(#paylink-foot-blur)">
-            <rect x="0" y="276" width="174" height="323" fill="url(#paylink-foot-grad)" />
-            <rect x="141" y="197" width="174" height="402" fill="url(#paylink-foot-grad)" />
-            <rect x="282" y="124" width="174" height="475" fill="url(#paylink-foot-grad)" />
-            <rect x="424" y="59" width="174" height="540" fill="url(#paylink-foot-grad)" />
-            <rect x="565" y="12" width="174" height="587" fill="url(#paylink-foot-grad)" />
-            <rect x="706" y="59" width="174" height="540" fill="url(#paylink-foot-grad)" />
-            <rect x="847" y="124" width="174" height="475" fill="url(#paylink-foot-grad)" />
-            <rect x="988" y="197" width="174" height="402" fill="url(#paylink-foot-grad)" />
-            <rect x="1130" y="276" width="174" height="323" fill="url(#paylink-foot-grad)" />
+          <g filter="url(#harelink-foot-blur)">
+            <rect x="0" y="276" width="174" height="323" fill="url(#harelink-foot-grad)" />
+            <rect x="141" y="197" width="174" height="402" fill="url(#harelink-foot-grad)" />
+            <rect x="282" y="124" width="174" height="475" fill="url(#harelink-foot-grad)" />
+            <rect x="424" y="59" width="174" height="540" fill="url(#harelink-foot-grad)" />
+            <rect x="565" y="12" width="174" height="587" fill="url(#harelink-foot-grad)" />
+            <rect x="706" y="59" width="174" height="540" fill="url(#harelink-foot-grad)" />
+            <rect x="847" y="124" width="174" height="475" fill="url(#harelink-foot-grad)" />
+            <rect x="988" y="197" width="174" height="402" fill="url(#harelink-foot-grad)" />
+            <rect x="1130" y="276" width="174" height="323" fill="url(#harelink-foot-grad)" />
           </g>
         </svg>
       </div>
 
-      <div className="paylink__foot-inner">
-        <div className="paylink__foot-grid">
+      <div className="harelink__foot-inner">
+        <div className="harelink__foot-grid">
           <div>
-            <span className="paylink__foot-word">
-              PAY<span>LINK</span>
+            <span className="harelink__foot-word">
+              HARE<span>LINK</span>
             </span>
-            <p className="paylink__foot-tag">
+            <p className="harelink__foot-tag">
               Payments for the cooperative web, built by Tellus Cooperative on
               the Stellar network.
             </p>
             <Link
-              className="paylink__foot-cta"
+              className="harelink__foot-cta"
               href="https://blog.telluscoop.com/subscribe"
               target="_blank"
               rel="noreferrer"
@@ -184,7 +184,7 @@ export default function PaylinkFooter() {
             </Link>
           </div>
 
-          <nav className="paylink__foot-nav" aria-label="Footer">
+          <nav className="harelink__foot-nav" aria-label="Footer">
             {FOOTER_NAV.map((col) => (
               <div key={col.title}>
                 <h4>{col.title}</h4>
@@ -206,9 +206,9 @@ export default function PaylinkFooter() {
           </nav>
         </div>
 
-        <div className="paylink__foot-bottom">
+        <div className="harelink__foot-bottom">
           <span>© 2026 Tellus Cooperative</span>
-          <div className="paylink__foot-socials">
+          <div className="harelink__foot-socials">
             {SOCIALS.map((social) => (
               <a
                 key={social.label}
@@ -224,7 +224,7 @@ export default function PaylinkFooter() {
             ))}
           </div>
           <a
-            className="paylink__foot-meta"
+            className="harelink__foot-meta"
             href="https://github.com/Klorenn/"
             target="_blank"
             rel="noreferrer"

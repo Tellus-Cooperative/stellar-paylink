@@ -23,7 +23,7 @@ async function createLink(
 
 test("home page loads", async ({ page }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle(/Paylink/i);
+  await expect(page).toHaveTitle(/HareLink/i);
 });
 
 test("create link via API then pay page renders pending", async ({
