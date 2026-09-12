@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { toPng } from "html-to-image";
 
 import { ShinyButton } from "@/components/ui/shiny-button";
+import ShareCard from "@/components/ui/harelink-share-card";
 
 
 
@@ -105,6 +107,9 @@ export default function CreateForm({
   const [error, setError] = useState<string | null>(null);
   const [created, setCreated] = useState<CreatedLink | null>(null);
   const [copied, setCopied] = useState(false);
+  const [exporting, setExporting] = useState<"qr" | "card" | null>(null);
+
+  const shareCardRef = useRef<HTMLDivElement>(null);
 
   const selectedAsset =
     assets.find((asset) => assetKey(asset) === selectedAssetKey) ?? assets[0];
@@ -210,22 +215,6 @@ export default function CreateForm({
     }
   }
 
-  async function shareNative() {
-    if (!created) return;
-    const message = shareMessage();
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: `HareLink: ${created.title}`, text: message, url: created.paymentUrl });
-      } else {
-        await navigator.clipboard.writeText(message);
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 2000);
-      }
-    } catch {
-      // cancelado por usuario
-    }
-  }
-
   function reset() {
     setCreated(null);
     setTitle("");
@@ -233,6 +222,84 @@ export default function CreateForm({
     setDescription("");
     setExpiry("never");
     setCopied(false);
+  }
+
+  async function downloadQr() {
+    if (!created || !shareCardRef.current) return;
+    const node = shareCardRef.current.querySelector<HTMLElement>(
+      "[data-export-qr]"
+    );
+    if (!node) return;
+    setExporting("qr");
+    try {
+      const dataUrl = await toPng(node, {
+        pixelRatio: 4,
+        cacheBust: true,
+        backgroundColor: "#ffffff",
+      });
+      const link = document.createElement("a");
+      link.download = `harelink-qr-${created.slug}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch {
+      setError("Could not generate the QR image. Try again.");
+    } finally {
+      setExporting(null);
+    }
+  }
+
+  async function shareCard() {
+    if (!created || !shareCardRef.current) return;
+    setExporting("card");
+    try {
+      const dataUrl = await toPng(shareCardRef.current, {
+        pixelRatio: 2,
+        cacheBust: true,
+        backgroundColor: "#161616",
+      });
+
+      // Convertir dataUrl a blob sin fetch (CSP bloquea fetch con data: URIs).
+      const [header, data] = dataUrl.split(",");
+      const mime = header.match(/:(.*?);/)?.[1] || "image/png";
+      const binary = atob(data);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      const blob = new Blob([bytes], { type: mime });
+      const file = new File(
+        [blob],
+        `harelink-pay-${created.slug}.png`,
+        { type: "image/png" }
+      );
+
+      const nav = navigator as Navigator & {
+        canShare?: (data: ShareData) => boolean;
+      };
+      const isTouchDevice = navigator.maxTouchPoints > 0;
+      if (
+        isTouchDevice &&
+        nav.share &&
+        nav.canShare &&
+        nav.canShare({ files: [file] })
+      ) {
+        // En móvil: permite elegir X, WhatsApp u otra app con la imagen lista.
+        await nav.share({
+          files: [file],
+          title: `HareLink: ${created.title}`,
+          text: shareMessage(),
+        });
+        return;
+      }
+
+      // Fallback desktop: descargar la tarjeta para adjuntarla manualmente.
+      const link = document.createElement("a");
+      link.download = `harelink-pay-${created.slug}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch {
+      // Usuario canceló el share nativo; no es un error.
+    } finally {
+      setExporting(null);
+    }
   }
 
   if (created) {
@@ -263,9 +330,18 @@ export default function CreateForm({
             <button
               className="harelink__ghost-button"
               type="button"
-              onClick={shareNative}
+              onClick={shareCard}
+              disabled={exporting !== null}
             >
-              Share
+              {exporting === "card" ? "Preparing…" : "Share card"}
+            </button>
+            <button
+              className="harelink__ghost-button"
+              type="button"
+              onClick={downloadQr}
+              disabled={exporting !== null}
+            >
+              {exporting === "qr" ? "Preparing…" : "Download QR"}
             </button>
             <a
               className="harelink__ghost-button"
@@ -285,7 +361,10 @@ export default function CreateForm({
           </div>
 
           <p className="harelink__field-hint">
-            The payer signs a transaction carrying memo{" "}
+            Share card generates{" "}
+            <strong>a ready-to-post image</strong> (payment details + QR) for
+            X, WhatsApp or any app, just like exchange share cards. The payer
+            signs a transaction carrying memo{" "}
             <strong>{created.memo}</strong>. Without that memo the payment
             cannot be matched back to this link.
           </p>
@@ -349,6 +428,29 @@ export default function CreateForm({
             </div>
           </div>
         </aside>
+
+        {/* Tarjeta de share oculta fuera de pantalla: se exporta a PNG con
+            html-to-image para el botón "Share card" y "Download QR". */}
+        <div
+          aria-hidden
+          style={{
+            position: "fixed",
+            top: 0,
+            left: "-1200px",
+            pointerEvents: "none",
+          }}
+        >
+          <ShareCard
+            ref={shareCardRef}
+            title={created.title}
+            amount={created.amount}
+            assetLabel={created.assetLabel}
+            destination={created.destination}
+            memo={created.memo}
+            networkLabel={networkLabel}
+            paymentUrl={created.paymentUrl}
+          />
+        </div>
       </section>
     );
   }

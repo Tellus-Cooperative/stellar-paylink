@@ -99,3 +99,36 @@ test("create form submits and shows link plus QR", async ({ page }) => {
   await expect(page.getByRole("img", { name: /QR code/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /Copy link/i })).toBeVisible();
 });
+
+test("success panel exposes share card and QR download", async ({ page }) => {
+  await page.goto("/create");
+  await page.getByLabel("What is it for").fill("E2E share card");
+  await page.getByLabel("Amount", { exact: true }).fill("3.5");
+  await page.getByLabel("Receiving address").fill(DESTINATION);
+  await page.getByRole("button", { name: /Create payment link/i }).click();
+  await expect(page.getByText("Link ready")).toBeVisible();
+
+  // Botones nuevos del share card estilo Binance
+  const shareCard = page.getByRole("button", { name: /Share card/i });
+  const downloadQr = page.getByRole("button", { name: /Download QR/i });
+  await expect(shareCard).toBeVisible();
+  await expect(downloadQr).toBeVisible();
+
+  // La tarjeta exportable está en el DOM (1080px) con su QR, aunque oculta
+  const exported = page.locator("[data-export-card]");
+  await expect(exported).toHaveCount(1);
+  const qr = page.locator("[data-export-qr] svg");
+  await expect(qr).toHaveCount(1);
+
+  // Download QR dispara una descarga PNG
+  const qrDownload = page.waitForEvent("download", { timeout: 20000 });
+  await downloadQr.click();
+  const qrFile = await qrDownload;
+  expect(qrFile.suggestedFilename()).toMatch(/^harelink-qr-.*\.png$/);
+
+  // Share card en desktop descarga la tarjeta PNG
+  const cardDownload = page.waitForEvent("download", { timeout: 20000 });
+  await shareCard.click();
+  const cardFile = await cardDownload;
+  expect(cardFile.suggestedFilename()).toMatch(/^harelink-pay-.*\.png$/);
+});
