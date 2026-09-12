@@ -26,4 +26,21 @@ test("capture release screenshots", async ({ page, request }, testInfo) => {
   await page.goto(`/receipt/${slug}`);
   await expect(page.getByText("No verified payment yet")).toBeVisible();
   await page.screenshot({ path: shot("receipt-pending") });
+
+  if (testInfo.project.name === "mobile") return;
+
+  // Screenshot of the success panel and share menu (desktop only)
+  await page.goto("/create");
+  await page.getByLabel("What is it for").fill("Demo screenshot");
+  await page.getByLabel("Amount", { exact: true }).fill("5");
+  await page.getByLabel("Receiving address").fill(DESTINATION);
+  await page.getByRole("button", { name: /Create payment link/i }).click();
+  await expect(page.getByText("Link ready")).toBeVisible();
+  await page.screenshot({ path: shot("create-success") });
+
+  await page.getByRole("button", { name: /Share card/i }).click();
+  await page
+    .getByRole("menu", { name: /Share options/i })
+    .waitFor({ state: "visible" });
+  await page.screenshot({ path: shot("create-share-menu") });
 });
