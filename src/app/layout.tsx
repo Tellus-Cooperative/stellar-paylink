@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     (process.env.NEXT_PUBLIC_APP_URL && process.env.NEXT_PUBLIC_APP_URL.trim().length > 0
       ? process.env.NEXT_PUBLIC_APP_URL
-      : "https://harelink.telluscoop.com")
+      : "https://stellar-paylink-lac.vercel.app")
   ),
   alternates: { canonical: "/" },
   openGraph: {
