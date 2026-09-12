@@ -19,23 +19,6 @@ export default function CreateLink() {
       <div className="harelink__inner">
         <PaylinkTopbar pill={networkLabel} />
 
-        <section className="harelink__hero">
-          <div className="harelink__hero-copy">
-            <p className="harelink__eyebrow">HARELINK / TELLUS COOPERATIVE</p>
-            <h1 className="harelink__title">
-              Create a payment link.
-            </h1>
-            <p className="harelink__lede">
-              Set the payment details once, share the link anywhere, and let
-              anyone approve it from their own Stellar wallet. Funds settle
-              directly to the receiving address.
-            </p>
-            <p className="harelink__field-hint" style={{ marginTop: 10 }}>
-              One link. Direct settlement. — HareLink never takes custody.
-            </p>
-          </div>
-        </section>
-
         <CreateForm
           assets={assets}
           networkPassphrase={network.passphrase}

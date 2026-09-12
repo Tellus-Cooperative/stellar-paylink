@@ -6,6 +6,7 @@ import { toPng } from "html-to-image";
 
 import { ShinyButton } from "@/components/ui/shiny-button";
 import ShareCard from "@/components/ui/harelink-share-card";
+import HareArt from "@/components/ui/harelink-hare-art";
 
 
 
@@ -20,6 +21,61 @@ const QRCode = dynamic(
   role?: string;
   "aria-label"?: string;
 }>;
+
+// Iconos de 18px, trazo de 1.6: acompañan a las acciones secundarias sin
+// competir con el texto. Decorativos — cada control lleva su propia etiqueta.
+const ICON_PROPS = {
+  width: 18,
+  height: 18,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.6,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+  "aria-hidden": true,
+  focusable: false,
+};
+
+function ShareIcon() {
+  return (
+    <svg {...ICON_PROPS}>
+      <circle cx="18" cy="5" r="2.6" />
+      <circle cx="6" cy="12" r="2.6" />
+      <circle cx="18" cy="19" r="2.6" />
+      <path d="M8.4 10.8 15.6 6.6M8.4 13.2l7.2 4.2" />
+    </svg>
+  );
+}
+
+function QrIcon() {
+  return (
+    <svg {...ICON_PROPS}>
+      <rect x="3" y="3" width="7" height="7" rx="1.4" />
+      <rect x="14" y="3" width="7" height="7" rx="1.4" />
+      <rect x="3" y="14" width="7" height="7" rx="1.4" />
+      <path d="M14 14h3v3h-3zM20 14h1M14 20h3M20 18v3" />
+    </svg>
+  );
+}
+
+function ExternalIcon() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M14 4h6v6M20 4l-8.5 8.5" />
+      <path d="M18 14.5V19a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 19V8a1.5 1.5 0 0 1 1.5-1.5H10" />
+    </svg>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg {...ICON_PROPS}>
+      <rect x="9" y="9" width="11" height="11" rx="2" />
+      <path d="M15 6.5A2.5 2.5 0 0 0 12.5 4H6a2 2 0 0 0-2 2v6.5A2.5 2.5 0 0 0 6.5 15" />
+    </svg>
+  );
+}
 
 import {
   FREIGHTER_INSTALL_URL,
@@ -107,6 +163,7 @@ export default function CreateForm({
   const [error, setError] = useState<string | null>(null);
   const [created, setCreated] = useState<CreatedLink | null>(null);
   const [copied, setCopied] = useState(false);
+  const [memoCopied, setMemoCopied] = useState(false);
   const [exporting, setExporting] = useState<"qr" | "card" | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [cardImage, setCardImage] = useState<{ dataUrl: string } | null>(null);
@@ -196,24 +253,25 @@ export default function CreateForm({
     return `HareLink — One link. Direct settlement.\n${created.title}: ${created.amount} ${created.assetLabel} → ${created.paymentUrl}`;
   }
 
-  async function copyLink() {
+  async function copyPaymentLink() {
     if (!created) return;
-    const message = shareMessage();
-    // Web Share API cuando esté disponible (móvil), fallback a clipboard
     try {
-      if (navigator.share) {
-        await navigator.share({ title: `HareLink: ${created.title}`, text: message, url: created.paymentUrl });
-        return;
-      }
-    } catch {
-      // usuario canceló o share falló, continuar a clipboard
-    }
-    try {
-      await navigator.clipboard.writeText(message);
+      await navigator.clipboard.writeText(created.paymentUrl);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
       setError("Clipboard is blocked. Copy the link manually.");
+    }
+  }
+
+  async function copyMemo() {
+    if (!created) return;
+    try {
+      await navigator.clipboard.writeText(created.memo);
+      setMemoCopied(true);
+      window.setTimeout(() => setMemoCopied(false), 2000);
+    } catch {
+      setError("Clipboard is blocked. Copy the memo manually.");
     }
   }
 
@@ -224,6 +282,7 @@ export default function CreateForm({
     setDescription("");
     setExpiry("never");
     setCopied(false);
+    setMemoCopied(false);
     setMenuOpen(false);
     setCardImage(null);
   }
@@ -354,187 +413,232 @@ export default function CreateForm({
 
   if (created) {
     return (
-      <section className="harelink__builder" aria-label="Payment link created">
-        <div className="harelink__panel harelink__panel--form">
-          <p className="harelink__preview-eyebrow">Link ready</p>
-          <h2 className="harelink__result-title">{created.title}</h2>
+      <>
+        <section className="hlready__hero">
+          <p className="harelink__eyebrow">HARELINK / TELLUS COOPERATIVE</p>
+          <h1 className="hlready__title">
+            Your payment link is <span>ready.</span>
+          </h1>
+          <p className="hlready__lede">
+            Share the link or QR code. The payer signs from their own Stellar
+            wallet, and funds settle directly to the receiving address.
+          </p>
+        </section>
 
-          <label className="harelink__field">
-            <span className="harelink__field-label">Share this link</span>
-            <input
-              className="harelink__text-input"
-              value={created.paymentUrl}
-              readOnly
-              onFocus={(event) => event.currentTarget.select()}
-            />
-          </label>
+        <section className="hlready" aria-label="Payment link created">
+          <div className="hlready__panel">
+            <div className="hlready__left">
+              <p className="hlready__eyebrow">Link ready</p>
 
-          <div className="harelink__result-actions">
-            <button
-              className="harelink__primary"
-              type="button"
-              onClick={copyLink}
-            >
-              {copied ? "Copied" : "Copy link"} <span aria-hidden>↗</span>
-            </button>
-            <div className="harelink__share">
+              <div className="hlready__amount-row">
+                <p className="hlready__amount">
+                  {created.amount} <span>{created.assetLabel}</span>
+                </p>
+                <span className="hlready__amount-rule" aria-hidden />
+                <p className="hlready__request">{created.title}</p>
+              </div>
+
+              <label className="hlready__label" htmlFor="harelink-payment-url">
+                Payment link
+              </label>
+              <div className="hlready__linkfield">
+                <input
+                  id="harelink-payment-url"
+                  className="hlready__linkfield-input"
+                  value={created.paymentUrl}
+                  readOnly
+                  onFocus={(event) => event.currentTarget.select()}
+                />
+                <button
+                  className="hlready__icon-button"
+                  type="button"
+                  onClick={copyPaymentLink}
+                  aria-label="Copy payment link"
+                >
+                  <CopyIcon />
+                </button>
+              </div>
+
               <button
-                className="harelink__ghost-button"
+                className="hlready__cta"
                 type="button"
-                onClick={shareMenu}
-                disabled={exporting !== null}
-                aria-haspopup="menu"
-                aria-expanded={menuOpen}
+                onClick={copyPaymentLink}
               >
-                {exporting === "card" ? "Preparing…" : "Share card"}
+                {copied ? "Copied" : "Copy payment link"}
               </button>
 
-              {menuOpen && (
-                <div
-                  className="harelink__share-menu"
-                  role="menu"
-                  aria-label="Share options"
-                >
+              <div className="hlready__actions">
+                <div className="hlready__share">
                   <button
-                    className="harelink__share-menu-item"
+                    className="hlready__action"
                     type="button"
-                    role="menuitem"
-                    onClick={shareViaSystem}
+                    onClick={shareMenu}
                     disabled={exporting !== null}
+                    aria-haspopup="menu"
+                    aria-expanded={menuOpen}
                   >
-                    Share with the system
+                    <ShareIcon />
+                    {exporting === "card" ? "Preparing…" : "Share request"}
                   </button>
-                  <button
-                    className="harelink__share-menu-item"
-                    type="button"
-                    role="menuitem"
-                    onClick={saveCardImage}
-                    disabled={!cardImage || exporting !== null}
-                  >
-                    Save image (PNG)
-                  </button>
-                  <button
-                    className="harelink__share-menu-item"
-                    type="button"
-                    role="menuitem"
-                    onClick={shareOnX}
-                  >
-                    Post on X
-                  </button>
-                  <button
-                    className="harelink__share-menu-item"
-                    type="button"
-                    role="menuitem"
-                    onClick={shareOnWhatsApp}
-                  >
-                    WhatsApp
-                  </button>
-                  <button
-                    className="harelink__share-menu-item"
-                    type="button"
-                    role="menuitem"
-                    onClick={closeShareMenu}
-                  >
-                    Close
-                  </button>
+
+                  {menuOpen && (
+                    <div
+                      className="harelink__share-menu"
+                      role="menu"
+                      aria-label="Share options"
+                    >
+                      <button
+                        className="harelink__share-menu-item"
+                        type="button"
+                        role="menuitem"
+                        onClick={shareViaSystem}
+                        disabled={exporting !== null}
+                      >
+                        Share with the system
+                      </button>
+                      <button
+                        className="harelink__share-menu-item"
+                        type="button"
+                        role="menuitem"
+                        onClick={saveCardImage}
+                        disabled={!cardImage || exporting !== null}
+                      >
+                        Save image (PNG)
+                      </button>
+                      <button
+                        className="harelink__share-menu-item"
+                        type="button"
+                        role="menuitem"
+                        onClick={shareOnX}
+                      >
+                        Post on X
+                      </button>
+                      <button
+                        className="harelink__share-menu-item"
+                        type="button"
+                        role="menuitem"
+                        onClick={shareOnWhatsApp}
+                      >
+                        WhatsApp
+                      </button>
+                      <button
+                        className="harelink__share-menu-item"
+                        type="button"
+                        role="menuitem"
+                        onClick={closeShareMenu}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  )}
                 </div>
+
+                <button
+                  className="hlready__action"
+                  type="button"
+                  onClick={downloadQr}
+                  disabled={exporting !== null}
+                >
+                  <QrIcon />
+                  {exporting === "qr" ? "Preparing…" : "Download QR"}
+                </button>
+
+                <a
+                  className="hlready__action"
+                  href={`/pay/${created.slug}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <ExternalIcon />
+                  Open payment page
+                </a>
+              </div>
+
+              <button
+                className="hlready__textlink"
+                type="button"
+                onClick={reset}
+              >
+                Create another
+              </button>
+
+              <div className="hlready__notice">
+                <p className="hlready__notice-text">
+                  The payer must include memo <strong>{created.memo}</strong> so
+                  HareLink can match the payment to this request.
+                </p>
+                <button
+                  className="hlready__notice-action"
+                  type="button"
+                  onClick={copyMemo}
+                >
+                  <CopyIcon />
+                  {memoCopied ? "Memo copied" : "Copy memo"}
+                </button>
+              </div>
+
+              {error && (
+                <p className="harelink__error" role="alert">
+                  {error}
+                </p>
               )}
             </div>
-            <button
-              className="harelink__ghost-button"
-              type="button"
-              onClick={downloadQr}
-              disabled={exporting !== null}
-            >
-              {exporting === "qr" ? "Preparing…" : "Download QR"}
-            </button>
-            <a
-              className="harelink__ghost-button"
-              href={`/pay/${created.slug}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Open payment page
-            </a>
-            <button
-              className="harelink__ghost-button"
-              type="button"
-              onClick={reset}
-            >
-              Create another
-            </button>
-          </div>
 
-          <p className="harelink__field-hint">
-            Share card gives you a ready-to-post image plus shortcuts for X,
-            WhatsApp and your system share sheet — the payer signs a
-            transaction carrying memo{" "}
-            <strong>{created.memo}</strong>. Without that memo the payment
-            cannot be matched back to this link.
-          </p>
-        </div>
-
-        <aside className="harelink__panel harelink__panel--preview">
-          <div className="harelink__preview-art">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="harelink__preview-arrow"
-              src="/create-share-arrow.png"
-              alt="Glass arrow pointing upward, representing a shared payment link"
-            />
-          </div>
-
-          <div className="harelink__preview-body">
-            <p className="harelink__preview-eyebrow">Awaiting payment</p>
-            <h2 className="harelink__preview-amount">
-              {created.amount} <small>{created.assetLabel}</small>
-            </h2>
-
-            <div className="harelink__preview-rows">
-              <div className="harelink__preview-row">
-                <span className="harelink__preview-row-label">Sent to</span>
-                <span className="harelink__preview-row-value">
-                  {truncateAddress(created.destination)}
-                </span>
+            <aside className="hlready__right">
+              <div className="hlready__art">
+                <HareArt />
               </div>
-              <div className="harelink__preview-row">
-                <span className="harelink__preview-row-label">Memo</span>
-                <span className="harelink__preview-row-value">
-                  {created.memo}
-                </span>
-              </div>
-              <div className="harelink__preview-row">
-                <span className="harelink__preview-row-label">Network</span>
-                <span className="harelink__preview-row-value">
-                  Stellar · {networkLabel}
-                </span>
-              </div>
-              <div className="harelink__preview-row">
-                <span className="harelink__preview-row-label">Scan to pay</span>
-                <span className="harelink__preview-row-value">
-                  <span
-                    style={{
-                      display: "inline-block",
-                      background: "#fff",
-                      padding: 10,
-                      borderRadius: 12,
-                    }}
-                  >
+
+              <div className="hlready__receipt">
+                <p className="hlready__status">
+                  <span className="hlready__status-dot" aria-hidden />
+                  Awaiting payment
+                  <span className="hlready__badge">
+                    <span className="hlready__badge-dot" aria-hidden />
+                    {networkLabel}
+                  </span>
+                </p>
+
+                <p className="hlready__ramount">
+                  {created.amount} <span>{created.assetLabel}</span>
+                </p>
+
+                <dl className="hlready__rows">
+                  <div className="hlready__row">
+                    <dt>Sent to</dt>
+                    <dd>{truncateAddress(created.destination)}</dd>
+                  </div>
+                  <div className="hlready__row">
+                    <dt>Memo</dt>
+                    <dd>{created.memo}</dd>
+                  </div>
+                  <div className="hlready__row">
+                    <dt>Network</dt>
+                    <dd>Stellar · {networkLabel}</dd>
+                  </div>
+                </dl>
+
+                <div className="hlready__scan">
+                  <div className="hlready__scan-copy">
+                    <p className="hlready__scan-title">Scan to pay</p>
+                    <p className="hlready__scan-sub">Open with a Stellar wallet</p>
+                  </div>
+                  <div className="hlready__qr">
                     <QRCode
                       value={created.paymentUrl}
-                      size={148}
+                      size={135}
                       role="img"
                       aria-label={`QR code for ${created.paymentUrl}`}
                     />
-                  </span>
-                </span>
+                  </div>
+                </div>
               </div>
-            </div>
+            </aside>
           </div>
-        </aside>
+        </section>
 
         {/* Tarjeta de share oculta fuera de pantalla: se exporta a PNG con
-            html-to-image para el botón "Share card" y "Download QR". */}
+            html-to-image para el botón "Share request" y "Download QR". */}
         <div
           aria-hidden
           style={{
@@ -555,12 +659,24 @@ export default function CreateForm({
             paymentUrl={created.paymentUrl}
           />
         </div>
-      </section>
+      </>
     );
   }
 
   return (
     <form onSubmit={submit}>
+      <section className="harelink__hero">
+        <div className="harelink__hero-copy">
+          <p className="harelink__eyebrow">HARELINK / TELLUS COOPERATIVE</p>
+          <h1 className="harelink__title">Create a payment link.</h1>
+          <p className="harelink__lede">
+            Set the payment details once, share the link anywhere, and let
+            anyone approve it from their own Stellar wallet. Funds settle
+            directly to the receiving address.
+          </p>
+        </div>
+      </section>
+
       <section className="harelink__builder" aria-label="Payment link builder">
         <div className="harelink__panel harelink__panel--form">
           <div className="harelink__step">
@@ -695,12 +811,7 @@ export default function CreateForm({
 
         <aside className="harelink__panel harelink__panel--preview">
           <div className="harelink__preview-art">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="harelink__preview-arrow"
-              src="/create-share-arrow.png"
-              alt="Glass arrow pointing upward, representing a shared payment link"
-            />
+            <HareArt />
           </div>
 
           <div className="harelink__preview-body">
@@ -720,7 +831,7 @@ export default function CreateForm({
                 {destination ? truncateAddress(destination) : "GBC2…3Z7K"}
               </span>
             </p>
-            <span className="harelink__preview-link">harelink.to/8F3K9</span>
+            <span className="harelink__preview-link">/pay/…</span>
           </div>
         </aside>
       </section>

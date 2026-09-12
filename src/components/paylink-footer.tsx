@@ -81,7 +81,10 @@ export default function PaylinkFooter() {
     const glow = glowRef.current;
     if (!glow) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const compact = window.matchMedia("(max-width: 900px)");
+
+    if (reducedMotion.matches || compact.matches) {
       glow.style.transform = "scaleY(1)";
       return;
     }
@@ -109,6 +112,10 @@ export default function PaylinkFooter() {
       scheduled = true;
       requestAnimationFrame(() => {
         scheduled = false;
+        if (compact.matches) {
+          glow.style.transform = "scaleY(1)";
+          return;
+        }
         measure();
       });
     };
