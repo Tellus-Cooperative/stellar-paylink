@@ -25,7 +25,8 @@ Fuente de verdad para marcar avance. Solo se marca `[x]` lo verificado con coman
 
 - [x] Prueba end-to-end real en Testnet (2026-09-11): link `KKkFtIe5GN4c`, pago 3.5 XLM con memo `PL7SAXFZ73ZBUX5Y`, tx `28878649…a9d8183`, verify → recibo + estado `paid`; reintento idempotente. Nota: la firma se hizo con keypair directo (equivalente al XDR que firma Freighter); el signing vía extensión queda para prueba manual con wallet.
 - [x] Adaptador PostgreSQL (2026-09-11): migración `db/migrations/001_payment_links.sql` + `pnpm db:migrate`, `PostgresLinkStore` con `markPaid` atómico (`SELECT FOR UPDATE` + `UPDATE … WHERE status='pending'`, unique backstop 23505), selector por `DATABASE_URL`, 7 tests de integración (incluye carrera 10× `markPaid` → gana exactamente 1), smoke API→PG→API (`slug gdsDLI1yA8ex`).
-- [x] Configurar `USDC_ASSET_ISSUER` de Testnet y probar el flujo con trustline (2026-09-11): issuer canónico Circle `GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5` en `.env.example` (verificado en docs Stellar/Circle/testanchor); sin trustline → `422 DESTINATION_NOT_READY`; con trustline → `201`; pago+verify de crédito probado end-to-end con asset equivalente (25.5 TST, tx `524af439…a7ff7b7f` → `paid`). Pendiente manual: pago en USDC canónico (el faucet de Circle exige captcha web, sin API).
+- [x] Configurar `USDC_ASSET_ISSUER` de Testnet y probar el flujo con trustline (2026-09-11): issuer canónico Circle `GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5` en `.env.example` (verificado en docs Stellar/Circle/testanchor); sin trustline → `422 DESTINATION_NOT_READY`; con trustline → `201`; pago+verify de crédito probado end-to-end con asset equivalente (25.5 TST, tx `524af439…a7ff7b7f` → `paid`).
+- [x] Pago en USDC canónico (2026-09-12): link `s6yyxjJEAjo0`, memo `PLJRDKN2663BM2DQ`, 5 USDC real de Circle, tx `fb5a28cf…e830b602` → `verify verified:true` con recibo y explorerUrl. Funding del faucet de Circle vía UI manual (requiere captcha web, no hay API pública).
 
 ### P1 — sin esto no hay release open-source
 
@@ -34,7 +35,7 @@ Fuente de verdad para marcar avance. Solo se marca `[x]` lo verificado con coman
 - [x] Agregar `SECURITY.md` (reporte privado vía GitHub, alcance Testnet, supuestos).
 - [x] Acción QR para compartir el link (`react-qr-code` en el panel de éxito de `/create`).
 - [x] Decidir `/receipt/[slug]` y `/docs`: receipt implementado como ruta propia (`src/app/receipt/[slug]/page.tsx`, `ReceiptView` compartido con `/pay`); `/docs` descartado (README + CONTRIBUTING + SECURITY ya cubren setup/integración/seguridad).
-- [ ] Re-autenticar Raven (`opencode mcp auth stellar-raven`; token expirado 2026-09-11) para futuras revisiones.
+- [x] Re-autenticar Raven (opencode MCP stellar-raven; verificado operativo 2026-09-12).
 - [x] Plantillas de issues (`.github/ISSUE_TEMPLATE/`: bug, feature con backlog policy, config con canal de seguridad).
 
 ### P2 — endurecimiento
@@ -49,6 +50,7 @@ Fuente de verdad para marcar avance. Solo se marca `[x]` lo verificado con coman
 - [x] Pass accesibilidad estático en `/create` y `/pay/[slug]`: inputs con label, botones con nombre, imágenes decorativas con `alt=""`/aria-hidden, errores con `role="alert"`, estados con texto, controles nativos por teclado. Falta verificación con lector de pantalla.
 - [ ] Screenshots, demo corta, deploy `v0.1.0-rc.1`, prueba clean-room de fork, tag `v0.1.0`.
 - [x] Deploy en Vercel (2026-09-11): `https://stellar-paylink-lac.vercel.app` en verde (landing 200, imágenes 200, API 201). Hallazgos: preset Next.js vía `vercel.json`, landing desde `public/` + `outputFileTracingIncludes`, imágenes en `public/`. Neon conectado: migración aplicada, env vars (`DATABASE_URL` pooled+SSL, `NEXT_PUBLIC_APP_URL`, `USDC_ASSET_ISSUER`) y e2e en prod verificado (link `mjfc5uawvCdt`, pago 1.5 XLM tx `4bb4d15b…c3caf1` → `paid`, fila confirmada en Neon).
+- [x] Corregido `paymentUrl` en producción (2026-09-12): deploy con build en la nube (no `--prebuilt` local) por ejemplo `http://localhost:3000/pay/…`; variables `NEXT_PUBLIC_*` se incrustan en build-time y el `.env.production.local` local las tenía vacías. Deploy `99x9viinn` → `https://stellar-paylink-lac.vercel.app/pay/…` verificado vía `POST /api/links`.
 
 ## Release sequence
 
