@@ -1071,6 +1071,15 @@ select.paylink__text-input option, .harelink__text-input option {
 
 .paylink__foot-meta:hover, .harelink__foot-meta:hover { color: var(--sand); }
 
+.paylink__foot-notice, .harelink__foot-notice {
+  color: var(--teal);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: clamp(10px, 0.85vw, 11.5px);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 /* Responsive <900: 2col ->1, form primero preview debajo */
 @media (max-width: 900px) {
   .paylink__inner, .harelink__inner,

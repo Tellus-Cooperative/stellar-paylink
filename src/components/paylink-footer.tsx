@@ -207,6 +207,9 @@ export default function PaylinkFooter() {
         </div>
 
         <div className="harelink__foot-bottom">
+          <span className="harelink__foot-notice">
+            Experimental software · Testnet only · Not audited
+          </span>
           <span>© 2026 Tellus Cooperative</span>
           <div className="harelink__foot-socials">
             {SOCIALS.map((social) => (
