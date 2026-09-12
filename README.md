@@ -218,6 +218,7 @@ Unit tests live in `tests/` and cover amount parsing, address validation, memo c
 - [Delivery plan](./plan.md) — scope, architecture, tasks, risks, and acceptance criteria.
 - [Product roadmap](./roadmap.md) — release sequence for this week and subsequent versions.
 - [Contribution guide](./CONTRIBUTING.md) — workflow, quality gates, and conventions.
+- [Code of conduct](./CODE_OF_CONDUCT.md) — expected behavior and how to report a concern privately.
 - [Security policy](./SECURITY.md) — private vulnerability-reporting process and security assumptions.
 
 ## Technical references
@@ -230,15 +231,15 @@ Unit tests live in `tests/` and cover amount parsing, address validation, memo c
 
 ## Contributing
 
-Contributions will be welcome once the initial project skeleton is published. Keep pull requests focused, include tests for behavior changes, and never place private keys, seed phrases, credentials, or personal data in an issue, fixture, screenshot, or commit.
+Contributions are welcome. Keep pull requests focused, include tests for behavior changes, and never place private keys, seed phrases, credentials, or personal data in an issue, fixture, screenshot, or commit. Read the [contribution guide](./CONTRIBUTING.md) before opening a pull request.
 
-The first public issues should be labeled by difficulty, including `good first issue`, `help wanted`, `documentation`, and `security`.
+Open issues are labeled by difficulty and priority, including `good first issue`, `help wanted`, `documentation`, and `security`. Participation is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md).
 
 ## Security
 
 This is experimental software, not a bank, exchange, custodian, or audited payment processor. Test with Testnet assets only during the `v0.1` sprint.
 
-Do not report vulnerabilities containing active secrets in a public issue. The release repository will include a `SECURITY.md` file with a private reporting channel before `v0.1.0` is tagged.
+Do not report vulnerabilities in a public issue. See [`SECURITY.md`](./SECURITY.md) for the private reporting channel, which uses GitHub Private Vulnerability Reporting on this repository.
 
 ## Brand
 

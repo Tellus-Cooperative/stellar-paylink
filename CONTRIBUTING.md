@@ -48,3 +48,7 @@ Use acceptance criteria and a priority label: `P0 release blocker`, `P1 sprint`,
 ## Security
 
 Do not report vulnerabilities in public issues. See [SECURITY.md](./SECURITY.md) for the private process.
+
+## Code of conduct
+
+Participation in this project is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md). Report a concern privately to the maintainers, never in a public issue.
