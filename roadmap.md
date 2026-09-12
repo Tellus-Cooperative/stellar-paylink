@@ -43,7 +43,7 @@ Fuente de verdad para marcar avance. Solo se marca `[x]` lo verificado con coman
 - [x] Rate limits en `POST /api/links` (20/min) y verify (60/min) con `429 RATE_LIMITED` + `Retry-After` (verificado en vivo: 20 pasan, resto 429). In-memory por proceso; documentar Redis si hay multi-instancia.
 - [x] Headers seguros vía `src/proxy.ts` (antes `middleware.ts`; Next 16.3 lo marca deprecado): CSP (scripts externos bloqueados; `unsafe-inline` documentado como limitación hasta nonces), `nosniff`, `DENY`, `Referrer-Policy`, `Permissions-Policy`, HSTS. Verificado en vivo en `/`, `/create`, `/pay`, `/receipt`.
 - [x] Suite e2e Playwright (`playwright.config.ts`, `tests/e2e/flow.spec.ts` 6 tests + `screenshots.spec.ts` desktop/mobile, todo en verde 2026-09-11).
-- [ ] Re-verde e2e tras últimos cambios: test de teclado + screenshots (escritos, pendiente run con RAM libre; el servidor muere con ~80MB libres).
+- [x] Re-verde e2e tras últimos cambios (2026-09-12): test de teclado + screenshots desktop/mobile, 9/9 en verde (~9s).
 - [x] Migrar `src/middleware.ts` → `src/proxy.ts` (Next 16.3 marca middleware como deprecado; headers verificados).
 - [x] Tests de integración API (`tests/integration/api/links.test.ts`, 8 tests): creación solo con valores normalizados, link expirado no paga (410), hash reutilizado se rechaza (409), idempotencia.
 - [x] Corregido `Number(amount)` en `src/app/create/create-form.tsx` (usa `parseAmount().ok`, sin float).
