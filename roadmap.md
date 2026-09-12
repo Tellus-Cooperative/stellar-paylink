@@ -56,13 +56,15 @@ Fuente de verdad para marcar avance. Solo se marca `[x]` lo verificado con coman
 
 ## Release sequence
 
-| Release | Target | Outcome |
-| --- | --- | --- |
-| `v0.1.0` | Sep 16, 2026 | Forkable Testnet payment links for XLM and configured USDC |
-| `v0.2.0` | After MVP feedback | Better asset configuration, receipts, localization, and wallet coverage |
-| `v0.3.0` | After repeated creator use | Optional creator identity, dashboard, and reliable notifications |
-| `v0.4.0` | After integration demand | Embeddable button, SDK, and webhooks |
-| `v1.0.0` | After security review and stable use | Production-ready release criteria and optional Mainnet deployment path |
+Naming convention: each release gets a thematic codename, chosen by the maintainers, that travels with the version (release title) and is prefixed in its release notes. `v0.1.0` is **Genesis**. Future codenames should keep a single shared theme per release line (e.g. Stellar, payments, or the cooperative).
+
+| Release | Target | Outcome | Codename |
+| --- | --- | --- | --- |
+| `v0.1.0` | Sep 16, 2026 | Forkable Testnet payment links for XLM and configured USDC | Genesis |
+| `v0.2.0` | After MVP feedback | Better asset configuration, receipts, localization, and wallet coverage | TBD |
+| `v0.3.0` | After repeated creator use | Optional creator identity, dashboard, and reliable notifications | TBD |
+| `v0.4.0` | After integration demand | Embeddable button, SDK, and webhooks | TBD |
+| `v1.0.0` | After security review and stable use | Production-ready release criteria and optional Mainnet deployment path | TBD |
 
 ## Seven-day release sprint
 
